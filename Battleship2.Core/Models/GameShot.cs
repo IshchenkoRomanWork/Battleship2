@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Battleship2.Core.Models
 {
-    class GameShot : Entity, IGameShot
+    public class GameShot : Entity
     {
         public (int, int) TargetCoords { get; set; }
         public Guid ShooterId { get; set; }

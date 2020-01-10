@@ -7,16 +7,36 @@ using System.Text;
 
 namespace Battleship2.Core.Models
 {
-    class Map : Entity, IMap
+    public class Map : Entity
     {
-        private List<IShipInformation> _shipInformationList;
+        private List<ShipInformation> _shipInformationList;
         private List<(int, int)> _occupiedCoords;
+        public List<ShipInformation> ShipInformationList { 
+            get
+            {
+                List<ShipInformation> copy = new List<ShipInformation>(_shipInformationList);
+                return copy;
+            }
+            set
+            {
+                var newOccupiedCoords = new List<(int, int)>();
+                foreach(var si in value)
+                {
+                    var coords = GetCoordsFromShipInformation(si);
+                    ValidateCoords(coords);
+                    newOccupiedCoords.AddRange(coords);
+                }
+                _shipInformationList = value;
+                _occupiedCoords = newOccupiedCoords;
+            }
+        } 
+        public List<(int, int)> ShotCoords { get; set; }
         public Map() : base()
         {
-            _shipInformationList = new List<IShipInformation>();
+            _shipInformationList = new List<ShipInformation>();
             _occupiedCoords = new List<(int, int)>();
         }
-        public void AddShip(IShipInformation shipInformation)
+        public void AddShip(ShipInformation shipInformation)
         {
             var shipCoords = GetCoordsFromShipInformation(shipInformation);
             ValidateCoords(shipCoords);
@@ -24,15 +44,15 @@ namespace Battleship2.Core.Models
             _shipInformationList.Add(shipInformation);
             _occupiedCoords.AddRange(shipCoords);
         }
-        public IShipInformation GetShipInformation(int xCoord, int yCoord)
+        public ShipInformation GetShipInformation(int xCoord, int yCoord)
         {
             return _shipInformationList.FirstOrDefault(si => GetCoordsFromShipInformation(si).
                                             Any(coord => coord == (xCoord, yCoord)));   
         }
         private void ValidateCoords(List<(int, int)> validationCoords)
         {
-            CheckCoordsAreFree(validationCoords);
             CheckNotGoBeyondBorders(validationCoords);
+            CheckCoordsAreFree(validationCoords);
             CheckCoordIsNotOnAxis(validationCoords[0]);
         }
         private void CheckNotGoBeyondBorders(List<(int, int)> checkedCoords)
@@ -62,7 +82,7 @@ namespace Battleship2.Core.Models
                 throw new Exception("There's another ship on this coordinates");
             }
         } //Validation Check
-        private List<(int, int)> GetCoordsFromShipInformation(IShipInformation shipInformation)
+        private List<(int, int)> GetCoordsFromShipInformation(ShipInformation shipInformation)
         {
             int headX = shipInformation.Location.Coords.Item1;
             int headY = shipInformation.Location.Coords.Item2;

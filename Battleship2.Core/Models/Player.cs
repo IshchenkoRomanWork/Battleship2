@@ -5,8 +5,9 @@ using System.Text;
 
 namespace Battleship2.Core.Models
 {
-    class Player : Entity, IPlayer
+    public class Player : Entity
     {
         public string Name { get; set; }
+        public Map CurrentMap { get; set; }
     }
 }

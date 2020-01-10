@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Battleship2.Core.Models
 {
-    class Ship : Entity, IShip
+    public class Ship : Entity
     {
         public ShipType Type { get; set; }
         public List<DeckState> DeckStates { get; set; }
