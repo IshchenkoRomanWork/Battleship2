@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Battleship2.Core.Interfaces
 {
-    public interface IGameShot : IEntity
+    public interface IGameShot
     {
         public (int, int) TargetCoords { get; set; }
         public Guid ShooterId { get; set; }

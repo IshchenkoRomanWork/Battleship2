@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Battleship2.Core.Interfaces
 {
-    public interface IShipInformation : IEntity
+    public interface IShipInformation
     {
         IShip Ship { get; set; }
         IShipLocation Location  { get; set; }

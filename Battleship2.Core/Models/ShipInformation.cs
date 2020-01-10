@@ -5,11 +5,9 @@ using System.Text;
 
 namespace Battleship2.Core.Models
 {
-    class ShipInformation : IShipInformation
+    class ShipInformation : Entity, IShipInformation
     {
         public IShip Ship { get; set; }
         public IShipLocation Location { get; set; }
-
-        public Guid Id { get; set; }
     }
 }

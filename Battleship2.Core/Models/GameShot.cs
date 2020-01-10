@@ -5,13 +5,11 @@ using System.Text;
 
 namespace Battleship2.Core.Models
 {
-    class GameShot : IGameShot
+    class GameShot : Entity, IGameShot
     {
         public (int, int) TargetCoords { get; set; }
         public Guid ShooterId { get; set; }
         public bool TargetHit { get; set; }
         public bool ShipIsDrown { get; set; }
-
-        public Guid Id { get; set; }
     }
 }

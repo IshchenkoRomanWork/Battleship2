@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Battleship2.Core.Interfaces
 {
-    public interface IShipLocation : IEntity
+    public interface IShipLocation
     {
         public Direction Direction { get; set; }
         public (int, int) Coords {get; set; }

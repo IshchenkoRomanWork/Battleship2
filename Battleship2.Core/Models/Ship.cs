@@ -6,20 +6,9 @@ using System.Text;
 
 namespace Battleship2.Core.Models
 {
-    class Ship : IShip
+    class Ship : Entity, IShip
     {
         public ShipType Type { get; set; }
         public List<DeckState> DeckStates { get; set; }
-        public Guid Id { get; }
-
-        public Ship(ShipType type)
-        {
-
-        }
-
-        public IShip CreateShip(ShipType type)
-        {
-            return new Ship(type);
-        }
     }
 }

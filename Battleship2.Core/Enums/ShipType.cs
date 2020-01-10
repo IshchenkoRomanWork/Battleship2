@@ -6,9 +6,9 @@ namespace Battleship2.Core.Enums
 {
     public enum ShipType
     {
-        OneDeck,
-        TwoDeck,
-        ThreeDeck,
-        FourDeck
+        OneDeck = 1,
+        TwoDeck = 2,
+        ThreeDeck = 3,
+        FourDeck = 4
     }
 }

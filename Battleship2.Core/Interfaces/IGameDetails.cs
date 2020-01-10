@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Battleship2.Core.Interfaces
 {
-    interface IGameDetails : IEntity
+    interface IGameDetails
     {
         public ICollection<Guid> Players { get; set; }
         public ICollection<IMap> PlayerMaps { get; set; }

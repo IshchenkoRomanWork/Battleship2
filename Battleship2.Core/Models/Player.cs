@@ -5,10 +5,8 @@ using System.Text;
 
 namespace Battleship2.Core.Models
 {
-    class Player : IPlayer
+    class Player : Entity, IPlayer
     {
         public string Name { get; set; }
-
-        public Guid Id { get; set; }
     }
 }

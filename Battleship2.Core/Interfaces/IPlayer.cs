@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Battleship2.Core.Interfaces
 {
-    public interface IPlayer : IEntity
+    public interface IPlayer
     {
         public string Name { get; set; }
     }
