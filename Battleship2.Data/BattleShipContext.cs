@@ -24,7 +24,7 @@ namespace Battleship2.Data
             builder.Entity<GameDetails>().HasKey(gd => gd.Id);
             builder.Entity<GameDetails>().HasMany(gd => gd.PlayerMaps);
             builder.Entity<GameDetails>().HasMany(gd => gd.ShotList);
-            builder.Entity<GameDetails>().HasMany(gd => gd.WinnerShips);
+            builder.Entity<GameDetails>().HasMany(gd => gd.Players);
 
             builder.Entity<Map>().HasKey(m => m.Id);
             builder.Entity<Map>().HasMany(m => m.ShipInformationList);

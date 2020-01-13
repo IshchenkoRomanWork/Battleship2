@@ -1,6 +1,7 @@
 ﻿using Battleship2.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Battleship2.Core.Interfaces
@@ -11,6 +12,6 @@ namespace Battleship2.Core.Interfaces
         public TEntity Get(Guid id);
         public void Update(TEntity item);
         public void Delete(Guid id);
-        public ICollection<TEntity> GetAll();
+        public IQueryable<TEntity> GetAll();
     }
 }

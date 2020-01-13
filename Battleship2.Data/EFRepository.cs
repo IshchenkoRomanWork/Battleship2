@@ -3,6 +3,7 @@ using Battleship2.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Battleship2.Data
@@ -34,9 +35,9 @@ namespace Battleship2.Data
             return _dbSet.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id).Result;
         }
 
-        public ICollection<TEntity> GetAll()
+        public IQueryable<TEntity> GetAll()
         {
-            return _dbSet.AsNoTracking().ToListAsync().Result;
+            return _dbSet.AsNoTracking();
         }
 
         public void Update(TEntity item)
