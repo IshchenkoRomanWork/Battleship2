@@ -8,7 +8,7 @@ namespace Battleship2.Core.Models
     public class GameShot : Entity
     {
         public (int, int) TargetCoords { get; set; }
-        public int PlayerNumber { get; set; }
+        public Player Shooter { get; set; }
         public bool TargetHit { get; set; }
         public bool ShipIsDrown { get; set; }
     }
