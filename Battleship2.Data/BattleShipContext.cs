@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Battleship2.Data
 {
-    class BattleShipContext : DbContext
+    public class BattleShipContext : DbContext
     {
         public DbSet<GameDetails> GameDetails { get; set; }
         public DbSet<GameShot> GameShots { get; set; }
@@ -15,6 +15,7 @@ namespace Battleship2.Data
         public DbSet<Ship> Ships { get; set; }
         public DbSet<ShipInformation> ShipInformations { get; set; }
         public DbSet<ShipLocation> ShipLocations { get; set; }
+        public DbSet<StatisticsItem> Statistics  { get; set; }
         public BattleShipContext()
         {
             Database.EnsureCreated();
