@@ -14,5 +14,9 @@ namespace BattleShip2.BusinessLogic.Models.Filters
         {
             statistics = statistics.Where(si => si.WinnerName == PlayerName);
         }
+        public PlayerFilter(string name)
+        {
+            PlayerName = name;
+        }
     }
 }

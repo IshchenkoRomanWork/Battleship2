@@ -36,12 +36,12 @@ namespace Battleship2.Data
 
         public TEntity Get(Guid id)
         {
-            return _dbSet.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id).Result;
+            return _dbSet.FirstOrDefaultAsync(e => e.Id == id).Result;
         }
 
         public IQueryable<TEntity> GetAll()
         {
-            return _dbSet.AsNoTracking();
+            return _dbSet.AsQueryable();
         }
 
         public void Update(TEntity item)

@@ -24,11 +24,9 @@ namespace Battleship2.MVC.Controllers
             _unitOfWork = unitOfWork;
             _dBContext = dBContext;
         }
-        public IActionResult Index()
+        public IActionResult Index(Guid id)
         {
-            var IdentityId = Request.HttpContext.User.Claims.First(c => c.ValueType == "Id").Value;
-            var Identity = _dBContext.Set<BattleshipIdentity>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == Guid.Parse(IdentityId)).Result;
-            var player = _unitOfWork.GetPlayer(Identity.AssociatedPlayerId);
+            var player = _unitOfWork.GetPlayer(id);
             var detailsList = _unitOfWork.GetGameDetailsList(player);
             var viewModel = new List<GameDetailsViewModel>();
             foreach(var gameDetail in detailsList)

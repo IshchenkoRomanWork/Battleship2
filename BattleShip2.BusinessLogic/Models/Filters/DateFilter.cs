@@ -7,7 +7,7 @@ using System.Text;
 
 namespace BattleShip2.BusinessLogic.Models.Filters
 {
-    class DateFilter : IFilter
+    public class DateFilter : IFilter
     {
         public DateTime StartingDate { get; set; }
         public DateTime EndDate { get; set; }
@@ -15,6 +15,11 @@ namespace BattleShip2.BusinessLogic.Models.Filters
         public void ApplyFilter(ref IQueryable<StatisticsItem> statistics)
         {
             statistics = statistics.Where(si => si.GameDate > StartingDate && si.GameDate < EndDate);
+        }
+        public DateFilter(DateTime start, DateTime end)
+        {
+            StartingDate = start;
+            EndDate = end;
         }
     }
 }

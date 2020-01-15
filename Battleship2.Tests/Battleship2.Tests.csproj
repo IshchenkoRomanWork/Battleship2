@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Battleship2.Data\Battleship2.Data.csproj" />
+    <ProjectReference Include="..\Battleship2.MVC\Battleship2.MVC.csproj" />
   </ItemGroup>
 
 </Project>

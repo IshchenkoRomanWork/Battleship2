@@ -104,7 +104,7 @@ namespace Battleship2.Core.Models
         } //Validation Check
         private void CheckCoordIsNotOnAxis(Coords checkedCoord)
         {
-            if (checkedCoord.CoordX != 0 && checkedCoord.CoordY != 0)
+            if (checkedCoord.CoordX == 0 || checkedCoord.CoordY == 0)
             {
                 throw new Exception("Start coord can't lie on axis");
             }

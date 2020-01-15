@@ -34,8 +34,8 @@ namespace Battleship2.MVC
             //services.AddDbContext<BattleShipContext>(options => options.UseSqlServer(connectionString));
 
 
-            services.AddDbContext<BattleshipIdentityContext>(options => options.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()));
-            services.AddDbContext<BattleShipContext>(options => options.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()));
+            services.AddDbContext<BattleshipIdentityContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipIdentityDb"));
+            services.AddDbContext<BattleShipContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipDb"));
 
             services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
             services.AddSingleton<ActiveGames>();

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Battleship2.Tests
 {
-    public class Tests
+    public class DataTests
     {
         private BattleShipContext _dbContext;
         [SetUp]
@@ -30,27 +30,21 @@ namespace Battleship2.Tests
         }
 
         [Test]
-        public void Test_DataContext_Are_Created()
-        {
-            var context = GetDatabaseContext();
-            Assert.Pass();
-        }
-
-        [Test]
         public void Test_That_Maps_Are_Correctly_Added_And_Extracted()
         {
             MapSeeding();
-            var map = _dbContext.Set<Map>().AsNoTracking().ToListAsync().Result[0];
-            Assert.IsTrue(_dbContext.Set<Map>().CountAsync().Result == 0
-                && map.ShipInformationList[0].Location.Coords.CoordX == 4
-                && map.ShipInformationList[1].Ship.Type == ShipType.ThreeDeck);
+            var map = _dbContext.Set<Map>().AsQueryable().ToListAsync().Result[0];
+            Assert.IsTrue(map.ShipInformationList[0].Location.Coords.CoordX == 1
+                && map.ShipInformationList[1].Ship.Type == ShipType.TwoDeck);
         }
         [Test]
         public void Test_That_GameDetails_Are_Correctly_Saved()
         {
             GameDetailsSeeding();
-            var details = _dbContext.Set<GameDetails>().AsNoTracking().ToListAsync().Result[0];
-            Assert.IsTrue(details.PlayerMaps.First().ShipInformationList[0].Location.Coords.CoordX == 4 && details.Players.First().Name == "TestName");
+            var set = _dbContext.Set<GameDetails>().AsQueryable();
+            var list = set.ToListAsync().Result;
+            var details = list[0];
+            Assert.IsTrue(details.PlayerMaps.First().ShipInformationList[0].Location.Coords.CoordX == 1 && details.Players.First().Name == "TestName");
         }
         private void MapSeeding()
         {
@@ -64,7 +58,7 @@ namespace Battleship2.Tests
                         Direction = Direction.Down,
                         Coords = new Coords(1, 1)
                     },
-                    Ship = new Ship(4)
+                    Ship = new Ship(1)
                 });
                 Map1.AddShip(new ShipInformation()
                 {
@@ -73,7 +67,7 @@ namespace Battleship2.Tests
                         Direction = Direction.Up,
                         Coords = new Coords(2, 2)
                     },
-                    Ship = new Ship(3)
+                    Ship = new Ship(2)
                 });
                 var Map2 = new Map();
                 Map2.AddShip(new ShipInformation()
@@ -83,7 +77,7 @@ namespace Battleship2.Tests
                         Direction = Direction.Down,
                         Coords = new Coords(3, 3)
                     },
-                    Ship = new Ship(2)
+                    Ship = new Ship(3)
                 });
                 Map2.AddShip(new ShipInformation()
                 {
@@ -92,7 +86,7 @@ namespace Battleship2.Tests
                         Direction = Direction.Up,
                         Coords = new Coords(4, 4)
                     },
-                    Ship = new Ship(1)
+                    Ship = new Ship(4)
                 });
                 _dbContext.Add(Map1);
                 _dbContext.Add(Map2);
@@ -102,7 +96,7 @@ namespace Battleship2.Tests
         private void GameDetailsSeeding()
         {
             MapSeeding();
-            var maps = _dbContext.Set<Map>().AsNoTracking().ToListAsync().Result;
+            var maps = _dbContext.Set<Map>().AsQueryable().ToListAsync().Result;
             GameDetails details = new GameDetails()
             {
                 PlayerMaps = maps,
@@ -122,6 +116,7 @@ namespace Battleship2.Tests
                 ShotList = new List<GameShot>()
             };
             _dbContext.Add(details);
+            _dbContext.SaveChanges();
         }
 
     }

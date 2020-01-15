@@ -24,6 +24,7 @@ namespace Battleship2.Api.Controllers
         }
 
         [HttpGet]
+        [Route("[action]")]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
