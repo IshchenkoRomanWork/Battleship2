@@ -1,5 +1,6 @@
 ﻿using Battleship2.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,12 +17,16 @@ namespace Battleship2.Data
         public DbSet<ShipInformation> ShipInformations { get; set; }
         public DbSet<ShipLocation> ShipLocations { get; set; }
         public DbSet<StatisticsItem> Statistics  { get; set; }
-        public BattleShipContext()
-        {
-            Database.EnsureCreated();
+        public BattleShipContext(DbContextOptions<BattleShipContext> options)
+        : base(options)
+        { 
+        Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Ship>().Property(s => s.DeckStates);
+            builder.Entity<Ship>().Property(s => s.Type);
+
             builder.Entity<GameDetails>().HasKey(gd => gd.Id);
             builder.Entity<GameDetails>().HasMany(gd => gd.PlayerMaps);
             builder.Entity<GameDetails>().HasMany(gd => gd.ShotList);
@@ -29,6 +34,11 @@ namespace Battleship2.Data
 
             builder.Entity<Map>().HasKey(m => m.Id);
             builder.Entity<Map>().HasMany(m => m.ShipInformationList);
+            //builder.Entity<Map>().OwnsMany(m => m.ShotCoords, tuple =>
+            //{
+            //    tuple.Property("Item1");
+            //    tuple.Property("Item2");
+            //});
 
             builder.Entity<Player>().HasKey(p => p.Id);
             builder.Entity<Player>().Ignore(p => p.CurrentMap);

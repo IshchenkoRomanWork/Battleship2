@@ -1,6 +1,7 @@
 ﻿using Battleship2.Core.Interfaces;
 using Battleship2.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,12 @@ namespace Battleship2.Data
 {
     public class EFRepository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
-        private DbContext _dBcontext;
+        private DbContext _dBcontext { get; set; }
         DbSet<TEntity> _dbSet;
-        public EFRepository(DbContext dBcontext)
+
+        private readonly IServiceScopeFactory _scopeFactory;
+
+        public EFRepository(BattleShipContext dBcontext, IServiceScopeFactory scopeFactory)
         {
             _dBcontext = dBcontext;
             _dbSet = _dBcontext.Set<TEntity>();

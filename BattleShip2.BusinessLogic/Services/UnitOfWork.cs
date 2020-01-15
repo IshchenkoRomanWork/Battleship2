@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BattleShip2.BusinessLogic.Services
 {
@@ -20,7 +21,7 @@ namespace BattleShip2.BusinessLogic.Services
             IRepository<Player> players,
             IRepository<GameDetails> gameDetails,
             IRepository<StatisticsItem> statistics)
-        {
+        {     
             _maps = maps;
             _players = players;
             _gameDetails = gameDetails;
@@ -67,6 +68,14 @@ namespace BattleShip2.BusinessLogic.Services
         public void AddGameDetails(GameDetails item)
         {
             _gameDetails.Create(item);
+        }
+        public void CreatePlayer(Player player)
+        {
+            _players.Create(player);
+        }
+        public Player GetPlayer(Guid Id)
+        {
+            return _players.Get(Id);
         }
     }
 }

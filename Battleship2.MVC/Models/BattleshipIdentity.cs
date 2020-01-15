@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Battleship2.MVC.Models
 {
-    public class BattleshipIdentity : Entity
+    public class BattleshipIdentity
     {
         public Guid Id { get; private set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public Player AssociatedPlayer { get; set; }
+        public Guid AssociatedPlayerId { get; set; }
     }
 }

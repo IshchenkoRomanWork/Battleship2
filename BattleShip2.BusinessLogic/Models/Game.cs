@@ -47,7 +47,7 @@ namespace BattleShip2.BusinessLogic.Models
         {
             currentPlayer.CurrentMap.AddShip(shipInfo);
         }
-        public void ShotAt(Player targetPlayer, (int, int) coords)
+        public void ShotAt(Player targetPlayer, Coords coords)
         {
             var map = targetPlayer.CurrentMap;
             bool targetHit;

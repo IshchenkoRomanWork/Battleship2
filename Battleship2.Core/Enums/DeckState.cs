@@ -6,7 +6,7 @@ namespace Battleship2.Core.Enums
 {
     public enum DeckState
     {
-        Undamaged,
-        Damaged
+        Undamaged = 0,
+        Damaged = 1
     }
 }

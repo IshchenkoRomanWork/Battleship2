@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Battleship2.Core.Models;
 using Battleship2.MVC.Models;
 using Battleship2.MVC.Models.ViewModels;
+using BattleShip2.BusinessLogic.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +17,12 @@ namespace Battleship2.MVC.Controllers
     public class AccountController : Controller
     {
         private BattleshipIdentityContext db;
-        public AccountController(BattleshipIdentityContext context)
+        private UnitOfWork _unitOfWork;
+
+        public AccountController(BattleshipIdentityContext context , UnitOfWork unitOfWork)
         {
             db = context;
+            _unitOfWork = unitOfWork;
         }
         [HttpGet]
         public IActionResult Login()
@@ -32,7 +37,7 @@ namespace Battleship2.MVC.Controllers
                 BattleshipIdentity user = await db.Users.FirstOrDefaultAsync(u => u.Name == model.Name && u.Password == model.Password);
                 if (user != null)
                 {
-                    await Authenticate(model.Name);
+                    await Authenticate(model.Name, user.Id);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -53,10 +58,13 @@ namespace Battleship2.MVC.Controllers
                 BattleshipIdentity user = await db.Users.FirstOrDefaultAsync(u => u.Name == model.Name);
                 if (user == null)
                 {
-                    db.Users.Add(new BattleshipIdentity { Name = model.Name, Password = model.Password });
+                    Player player = new Player() { Name = model.Name };
+                    _unitOfWork.CreatePlayer(player);
+                    BattleshipIdentity identity = new BattleshipIdentity { Name = model.Name, Password = model.Password, AssociatedPlayerId = player.Id };
+                    db.Users.Add(identity);
                     await db.SaveChangesAsync();
 
-                    await Authenticate(model.Name);
+                    await Authenticate(model.Name, identity.Id);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -66,11 +74,12 @@ namespace Battleship2.MVC.Controllers
             return View(model);
         }
 
-        private async Task Authenticate(string userName)
+        private async Task Authenticate(string userName, Guid id)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
+                new Claim(ClaimsIdentity.DefaultNameClaimType, id.ToString(), "Id")
             };
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));

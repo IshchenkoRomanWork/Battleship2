@@ -30,15 +30,19 @@ namespace Battleship2.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<BattleshipIdentityContext>(options => options.UseSqlServer(connectionString));
-            services.AddDbContext<BattleShipContext>(options => options.UseSqlServer(connectionString));
+            //services.AddDbContext<BattleshipIdentityContext>(options => options.UseSqlServer(connectionString));
+            //services.AddDbContext<BattleShipContext>(options => options.UseSqlServer(connectionString));
 
-            services.AddSingleton(typeof(IRepository<>), typeof(EFRepository<>));
+
+            services.AddDbContext<BattleshipIdentityContext>(options => options.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()));
+            services.AddDbContext<BattleShipContext>(options => options.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()));
+
+            services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
             services.AddSingleton<ActiveGames>();
-            services.AddSingleton<UnitOfWork>();
+            services.AddScoped<UnitOfWork>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => 
+                .AddCookie(options =>
                 {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
@@ -63,7 +67,7 @@ namespace Battleship2.MVC
 
             app.UseRouting();
 
-            app.UseAuthentication(); 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

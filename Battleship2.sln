@@ -7,11 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleship2.Core", "Battles
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleship2.Data", "Battleship2.Data\Battleship2.Data.csproj", "{6CFD647F-3613-4BCC-8D8E-4C3286167EDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleship2.MVC", "Battleship2.MVC\Battleship2.MVC.csproj", "{DB3A1D75-D1B8-4850-82F1-B4F157459658}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleship2.MVC", "Battleship2.MVC\Battleship2.MVC.csproj", "{DB3A1D75-D1B8-4850-82F1-B4F157459658}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleship2.Api", "Battleship2.Api\Battleship2.Api.csproj", "{446F8054-4BC6-414A-85B5-390A6EBDF592}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleship2.Api", "Battleship2.Api\Battleship2.Api.csproj", "{446F8054-4BC6-414A-85B5-390A6EBDF592}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleShip2.BusinessLogic", "BattleShip2.BusinessLogic\BattleShip2.BusinessLogic.csproj", "{995F1F8F-14CA-425E-801C-F1B6828E1C87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BattleShip2.BusinessLogic", "BattleShip2.BusinessLogic\BattleShip2.BusinessLogic.csproj", "{995F1F8F-14CA-425E-801C-F1B6828E1C87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleship2.Tests", "Battleship2.Tests\Battleship2.Tests.csproj", "{0BA29BFA-21FD-4B86-B56A-746CE8A7FC9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{995F1F8F-14CA-425E-801C-F1B6828E1C87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{995F1F8F-14CA-425E-801C-F1B6828E1C87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{995F1F8F-14CA-425E-801C-F1B6828E1C87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BA29BFA-21FD-4B86-B56A-746CE8A7FC9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BA29BFA-21FD-4B86-B56A-746CE8A7FC9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BA29BFA-21FD-4B86-B56A-746CE8A7FC9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BA29BFA-21FD-4B86-B56A-746CE8A7FC9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

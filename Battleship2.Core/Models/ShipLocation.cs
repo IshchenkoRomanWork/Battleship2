@@ -9,6 +9,6 @@ namespace Battleship2.Core.Models
     public class ShipLocation : Entity
     {
         public Direction Direction { get; set; }
-        public (int, int) Coords { get; set ; }
+        public Coords Coords { get; set ; }
     }
 }

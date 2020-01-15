@@ -1,7 +1,30 @@
-﻿
+﻿@model IEnumerable<Battleship2.MVC.Models.ViewModels.GameDetailsViewModel>
+
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>All Games</h1>
 
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <th>
+                <b>Players:</b>
+                @Html.Display(item.PlayerName[0] + " " + item.PlayerName[1])
+            </th>
+            <td>
+                @Html.ActionLink("Details", "Details", new { item.Id }) |
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

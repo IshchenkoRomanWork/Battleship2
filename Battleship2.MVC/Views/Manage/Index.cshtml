@@ -1,7 +1,22 @@
-﻿
+﻿@model Battleship2.MVC.Models.ViewModels.PlayerViewModel
+
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+    <h1>Your Information</h1>
 
+    <div>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+        </dl>
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Index", "Index", Model.Id)';">Your Statistics</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Index", "GameDetails", Model.Id)';">Your Games</button>
+    </div>s
