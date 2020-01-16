@@ -60,6 +60,10 @@ namespace BattleShip2.BusinessLogic.Models
                 TargetHit = targetHit,
                 ShipIsDrown = shipIsDrown
             });
+            if(!targetHit)
+            {
+                ActivePlayer = targetPlayer;
+            }
         }
         public Player CheckForWin()
         {

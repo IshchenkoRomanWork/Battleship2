@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Battleship2.Core.Interfaces;
 using BattleShip2.BusinessLogic.Services;
+using Battleship2.MVC.Filters;
+using BattleShip2.BusinessLogic.Intefaces;
 
 namespace Battleship2.MVC
 {
@@ -40,13 +42,17 @@ namespace Battleship2.MVC
             services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
             services.AddSingleton<ActiveGames>();
             services.AddScoped<UnitOfWork>();
+            services.AddScoped<ILogger, Logger>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options => 
+            {
+                options.Filters.Add(typeof(ExceptionFilter));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
