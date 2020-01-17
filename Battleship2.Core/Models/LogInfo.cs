@@ -1,9 +1,8 @@
-﻿using Battleship2.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BattleShip2.BusinessLogic.Models
+namespace Battleship2.Core.Models
 {
     public class LogInfo : Entity
     {

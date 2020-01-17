@@ -22,7 +22,7 @@ namespace Battleship2.Core.Models
                 var newOccupiedCoords = new List<Coords>();
                 foreach(var si in value)
                 {
-                    var coords = GetCoordsFromShipInformation(si);
+                    var coords = si.GetCoordsFromShipInformation();
                     ValidateCoords(coords);
                     newOccupiedCoords.AddRange(coords);
                 }
@@ -38,20 +38,20 @@ namespace Battleship2.Core.Models
         }
         public void AddShip(ShipInformation shipInformation)
         {
-            var shipCoords = GetCoordsFromShipInformation(shipInformation);
+            var shipCoords = shipInformation.GetCoordsFromShipInformation();
             ValidateCoords(shipCoords);
 
             _shipInformationList.Add(shipInformation);
             _occupiedCoords.AddRange(shipCoords);
         }
-        public void ShotAtCoords(Coords coords, out bool targetHit, out bool shipIsDrown)
+        public List<Coords> ShotAtCoords(Coords coords, out bool targetHit, out bool shipIsDrown)
         {
             targetHit = false;
             shipIsDrown = false;
             var shipInfo = GetShipInformation(coords.CoordX, coords.CoordY);
             if(shipInfo != null)
             {
-                var section = GetCoordsFromShipInformation(shipInfo);
+                var section = shipInfo.GetCoordsFromShipInformation();
                 int deckNumber = 1;
                 for(; deckNumber < 4; deckNumber++)
                 {
@@ -63,16 +63,19 @@ namespace Battleship2.Core.Models
                 shipInfo.Ship.DeckStates[deckNumber - 1] = DeckState.Damaged;
                 targetHit = true;
                 shipIsDrown = shipInfo.Ship.DeckStates.All(ds => ds == DeckState.Damaged);
-                if(shipIsDrown)
+                var surroundingCoords = GetSurroundingCoords(section);
+                if (shipIsDrown)
                 {
-                    ShotCoords.AddRange(GetSurroundingCoords(section));
+                    ShotCoords.AddRange(surroundingCoords);
+                    return surroundingCoords;
                 }
             }
             ShotCoords.Add(coords);
+            return new List<Coords>() { coords };
         }
         public ShipInformation GetShipInformation(int xCoord, int yCoord)
         {
-            return _shipInformationList.FirstOrDefault(si => GetCoordsFromShipInformation(si).
+            return _shipInformationList.FirstOrDefault(si => si.GetCoordsFromShipInformation().
                                             Any(coord => coord.CoordX == xCoord && coord.CoordY == yCoord));   
         }
         private void ValidateCoords(List<Coords> validationCoords)
@@ -112,54 +115,52 @@ namespace Battleship2.Core.Models
         private void CheckShipIsntNearAnother(List<Coords> checkedCoords) 
         {
             var surroundingCoords = GetSurroundingCoords(checkedCoords);
-            if (_occupiedCoords.Intersect(surroundingCoords).Any())
+            if(_occupiedCoords.Any(coord => surroundingCoords.Any(scoord => coord.CoordX == scoord.CoordX && coord.CoordY == scoord.CoordX)))
             {
-                throw new Exception("Ships can't touch with angles or sides");
+                Exception exception = new Exception("Ships can't touch with angles or sides");
+                exception.Data.Add("type", GameException.ShipsTouch);
+                throw exception;
             }
         } //Validation Check
-        private List<Coords> GetCoordsFromShipInformation(ShipInformation shipInformation)
-        {
-            int headX = shipInformation.Location.Coords.CoordX;
-            int headY = shipInformation.Location.Coords.CoordY;
-            var headCoords = new Coords(headX, headY);
-            int length = (int)shipInformation.Ship.Type;
-            var sectionCoords = new List<Coords>();
-            sectionCoords.Add(headCoords);
+        //private List<Coords> GetCoordsFromShipInformation(ShipInformation shipInformation)
+        //{
+        //    int headX = shipInformation.Location.Coords.CoordX;
+        //    int headY = shipInformation.Location.Coords.CoordY;
+        //    var headCoords = new Coords(headX, headY);
+        //    int length = (int)shipInformation.Ship.Type;
+        //    var sectionCoords = new List<Coords>();
+        //    sectionCoords.Add(headCoords);
 
-            for (int i = 1; i < length; i++)
-            {
-                switch (shipInformation.Location.Direction)
-                {
-                    case Direction.Right:
-                        IsZero(headX - i, ref length, ref i);
-                        sectionCoords.Add(new Coords(headX -1 , headY));
-                        break;
-                    case Direction.Left:
-                        IsZero(headX + i, ref length, ref i);
-                        sectionCoords.Add(new Coords(headX + i, headY));
-                        break;
-                    case Direction.Down:
-                        IsZero(headY + i, ref length, ref i);
-                        sectionCoords.Add(new Coords(headX, headY + i));
-                        break;
-                    case Direction.Up:
-                        IsZero(headY - i, ref length, ref i);
-                        sectionCoords.Add(new Coords(headX, headY - i));
-                        break;
-                }
-            }
-            return sectionCoords;
-        }
+        //    for (int i = 1; i < length; i++)
+        //    {
+        //        switch (shipInformation.Location.Direction)
+        //        {
+        //            case Direction.Right:
+        //                sectionCoords.Add(new Coords(headX -1 , headY));
+        //                break;
+        //            case Direction.Left:
+        //                sectionCoords.Add(new Coords(headX + i, headY));
+        //                break;
+        //            case Direction.Down:
+        //                sectionCoords.Add(new Coords(headX, headY + i));
+        //                break;
+        //            case Direction.Up:
+        //                sectionCoords.Add(new Coords(headX, headY - i));
+        //                break;
+        //        }
+        //    }
+        //    return sectionCoords;
+        //}
         private List<Coords> GetSurroundingCoords(List<Coords> section)
         {
             var surroundingCoords = new List<Coords>();
             foreach(var coord in section)
             {
-                for (int i = coord.CoordX - 1; i < coord.CoordX; i++)
+                for (int i = coord.CoordX - 1; i < coord.CoordX+2; i++)
                 {
                     if (i < 1) i++;
                     if (i > 10) break;
-                    for (int j = coord.CoordY - 1; j < coord.CoordY; j++)
+                    for (int j = coord.CoordY - 1; j < coord.CoordY+2; j++)
                     {
                         if (j < 1) j++;
                         if (j > 10) break;
@@ -172,14 +173,6 @@ namespace Battleship2.Core.Models
                 }
             }
             return surroundingCoords;
-        }
-        private void IsZero(int value, ref int length, ref int i)
-        {
-            if (value == 0)
-            {
-                i++;
-                length++;
-            }
         }
     }
 }

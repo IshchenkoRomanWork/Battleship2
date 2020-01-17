@@ -1,0 +1,75 @@
+﻿@model Battleship2.MVC.Models.ViewModels.GameViewModel
+
+@{
+    ViewData["Title"] = "Game";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3 id="opponentsname">Your opponent's Name: </h3>
+<h3 id="gamesid">Your game's Id: @Model.GameId</h3>
+<table cellpadding="10" r>
+    <tr>
+        <td class="maptable">
+            <h3>Your map</h3>
+            <table cellpadding="1">
+                @for (int i = 1; i <= 10; i++)
+                {
+                    <tr>
+                        @for (int j = 1; j <= 10; j++)
+                        {
+                            <td class="noship cell" data-x=@j.ToString() data-y=@((11-i).ToString()) name="shipcell"></td>
+                        }
+                    </tr>
+                }
+            </table>
+        </td>
+        <td class="maptable">
+            <h3>Your opponent's map</h3>
+            <table cellpadding="1">
+                @for (int i = 1; i <= 10; i++)
+                {
+                    <tr>
+                        @for (int j = 1; j <= 10; j++)
+                        {
+                            <td class="hiddencell cell" data-x=@j.ToString() data-y=@((11-i).ToString()) name="opshipcell"></td>
+                        }
+                    </tr>
+                }
+            </table>
+        </td>
+        <td class="shotlist">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">Game actions are displayed here</li>
+            </ul>
+        </td>
+    </tr>
+</table>
+<h3>Your Unadded Ships</h3>
+<table>
+    <tr id="availableships">
+        @for (int i = 1; i <= 4; i++)
+        {
+            @for (int j = i; j <= 4; j++)
+            {
+                <td data-shiptype=@i.ToString() class="shipexamplecell">
+                    <div class="shipexample">
+                        @for (int l = 0; l < i; l++)
+                        {
+                            <div class="cell ship"></div>
+                        }
+                    </div>
+                </td>
+            }
+        }
+    </tr>
+</table>
+<div class="border-top">
+    <button type="button" class="btn btn-primary btn-lg" id="readybutton">Ready</button>
+</div>
+<script>
+    var jsGameId = '@Model.GameId';
+    var jsGameIsCreated = '@ViewBag.IsCreated';
+    var jsPlayerId = '@ViewBag.PlayerId';
+</script>
+<script src="~/js/gamehub.js">
+</script>
+

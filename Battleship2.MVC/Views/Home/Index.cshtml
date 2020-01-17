@@ -2,11 +2,24 @@
     ViewData["Title"] = "Home Page";
 }
 
-    <div class="text-center">
-        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Index", "Statistics")';">Game Statistics</button>
-        @if (User.Identity.IsAuthenticated)
+<div class="text-center">
+    <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Index", "Statistics")';">Game Statistics</button>
+    @if (User.Identity.IsAuthenticated)
     {
-        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("CreateGame", "Game")';">Start Game</button>
-        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("ConnectToGame", "Game")';">Connect to Game</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Game", "Game")';">Start Game</button>
+        <button type="button" class="btn btn-primary btn-lg" id="connectButton">Connect to Game</button>
     }
-    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#connectButton').on('click', function () {
+                var gameid = window.prompt("Please, enter game's id");
+                window.location.href = "/Game/Game/" + gameid;
+   //             $.ajax({
+   //   url: '/Game/Game',
+   //   data: { gameId: gameid }
+   //})
+   });
+});
+    </script>
+</div>

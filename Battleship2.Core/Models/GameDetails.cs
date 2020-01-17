@@ -7,8 +7,8 @@ namespace Battleship2.Core.Models
 {
     public class GameDetails : Entity
     {
-        public ICollection<Player> Players { get; set; }
-        public ICollection<Map> PlayerMaps { get; set; }
-        public ICollection<GameShot> ShotList { get; set; }
+        public List<Player> Players { get; set; }
+        public List<Map> PlayerMaps { get; set; }
+        public List<GameShot> ShotList { get; set; }
     }
 }

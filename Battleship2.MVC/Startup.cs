@@ -16,6 +16,7 @@ using Battleship2.Core.Interfaces;
 using BattleShip2.BusinessLogic.Services;
 using Battleship2.MVC.Filters;
 using BattleShip2.BusinessLogic.Intefaces;
+using Battleship2.MVC.Hubs;
 
 namespace Battleship2.MVC
 {
@@ -40,9 +41,14 @@ namespace Battleship2.MVC
             services.AddDbContext<BattleShipContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipDb"));
 
             services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
-            services.AddSingleton<ActiveGames>();
             services.AddScoped<UnitOfWork>();
             services.AddScoped<ILogger, Logger>();
+            services.AddScoped<Helper>();
+
+
+            services.AddSingleton<ActiveGames>();
+
+            services.AddSignalR();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -78,6 +84,7 @@ namespace Battleship2.MVC
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<BattleShipHub>("/gamehub");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

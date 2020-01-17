@@ -8,7 +8,6 @@ namespace Battleship2.MVC.Models.ViewModels
 {
     public class GameViewModel
     {
-        public string Guid { get; set; }
-        public List<Map> YourAndOpponentsMaps { get; set; }
+        public string GameId { get; set; }
     }
 }

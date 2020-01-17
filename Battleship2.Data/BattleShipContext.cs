@@ -20,6 +20,7 @@ namespace Battleship2.Data
         public DbSet<ShipLocation> ShipLocations { get; set; }
         public DbSet<StatisticsItem> Statistics  { get; set; }
         public DbSet<Coords> Coords { get; set; }
+        public DbSet<Coords> LogInfos { get; set; }
         public BattleShipContext(DbContextOptions<BattleShipContext> options)
         : base(options)
         { 
@@ -59,6 +60,8 @@ namespace Battleship2.Data
             builder.Entity<ShipLocation>().HasOne(sl => sl.Coords);
 
             builder.Entity<StatisticsItem>().HasKey(si => si.Id);
+
+            builder.Entity<LogInfo>().HasKey(li => li.Id);
 
             base.OnModelCreating(builder);
         }

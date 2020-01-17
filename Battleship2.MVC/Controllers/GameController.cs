@@ -2,28 +2,41 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Battleship2.MVC.Hubs;
+using Battleship2.MVC.Models;
+using Battleship2.MVC.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Battleship2.MVC.Controllers
 {
     public class GameController : Controller
     {
-        //private UnitOfWork _unitOfWork {get; set;}
-        //public GameController(UnitOfWork unitOfWork)
-        //{
-        //    _unitOfWork = unitOfWork;
-        //}
-        public IActionResult Index()
+        private Helper _helper;
+        public GameController(Helper helper)
         {
-            return View();
+            _helper = helper;
+
         }
-        public IActionResult ConnectToGame(Guid playerId)
+        [NonAction]
+        public IActionResult Game(GameViewModel viewModel, bool isCreated)
         {
-            return View();
+            var player = _helper.GetPlayerFromRequest(HttpContext.Request);
+            ViewBag.IsCreated = isCreated;
+            if (isCreated)
+            {
+                ViewBag.PlayerId = player.Id.ToString();
+            }
+            return View(viewModel);
         }
-        public IActionResult CreateGame()
+        public IActionResult Game(string gameId)
         {
-            return View();
+            if(string.IsNullOrEmpty(gameId))
+            {
+                return Game(new GameViewModel() { GameId = null }, true);
+            }
+            GameViewModel viewModel = new GameViewModel() { GameId = gameId };
+            return Game(viewModel, false);
         }
         public IActionResult Win()
         {

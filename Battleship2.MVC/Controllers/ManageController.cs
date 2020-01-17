@@ -12,18 +12,14 @@ namespace Battleship2.MVC.Controllers
 {
     public class ManageController : Controller
     {
-        private UnitOfWork _unitOfWork;
-        private BattleshipIdentityContext _dBContext;
-        public ManageController(UnitOfWork unitOfWork, BattleshipIdentityContext dBContext)
+        private Helper _helper;
+        public ManageController(Helper helper)
         {
-            _unitOfWork = unitOfWork;
-            _dBContext = dBContext;
+            _helper = helper;
         }
         public IActionResult Index()
         {
-            var IdentityId = Request.HttpContext.User.Claims.First(c => c.ValueType == "Id").Value;
-            var Identity = _dBContext.Set<BattleshipIdentity>().AsQueryable().FirstOrDefaultAsync(e => e.Id == Guid.Parse(IdentityId)).Result;
-            var player = _unitOfWork.GetPlayer(Identity.AssociatedPlayerId);
+            var player = _helper.GetPlayerFromRequest(HttpContext.Request);
             return View(new PlayerViewModel() { Id = player.Id, Name = player.Name });
         }
     }

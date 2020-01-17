@@ -1,4 +1,5 @@
 ﻿using Battleship2.Core.Interfaces;
+using Battleship2.Core.Models;
 using BattleShip2.BusinessLogic.Intefaces;
 using BattleShip2.BusinessLogic.Models;
 using System;

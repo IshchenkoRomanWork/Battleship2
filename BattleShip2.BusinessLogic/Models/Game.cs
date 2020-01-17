@@ -30,7 +30,12 @@ namespace BattleShip2.BusinessLogic.Models
             bool threeDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.ThreeDeck) == 3;
             bool twoDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.TwoDeck) == 2;
             bool oneDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.OneDeck) == 1;
-            return fourDecksArePlaced && threeDecksArePlaced && twoDecksArePlaced && oneDecksArePlaced;
+            bool ready = fourDecksArePlaced && threeDecksArePlaced && twoDecksArePlaced && oneDecksArePlaced;
+            if (ready)
+            {
+                PlayersReady[GameDetails.Players.IndexOf(player)] = true;
+            }
+            return ready;
         }
         public bool GameStart()
         {
@@ -47,12 +52,12 @@ namespace BattleShip2.BusinessLogic.Models
         {
             currentPlayer.CurrentMap.AddShip(shipInfo);
         }
-        public void ShotAt(Player targetPlayer, Coords coords)
+        public List<(Coords, bool)> ShotAt(Player targetPlayer, Coords coords)
         {
             var map = targetPlayer.CurrentMap;
             bool targetHit;
             bool shipIsDrown;
-            map.ShotAtCoords(coords, out targetHit, out shipIsDrown);
+            var shotsResult = map.ShotAtCoords(coords, out targetHit, out shipIsDrown);
             GameDetails.ShotList.Add(new GameShot
             {
                 Shooter = ActivePlayer,
@@ -60,12 +65,17 @@ namespace BattleShip2.BusinessLogic.Models
                 TargetHit = targetHit,
                 ShipIsDrown = shipIsDrown
             });
-            if(!targetHit)
+            if (!targetHit)
             {
                 ActivePlayer = targetPlayer;
+                return shotsResult.Select(sr => (sr, false)).ToList();
+            }
+            else
+            {
+                return shotsResult.Select(sr => (sr, map.GetShipInformation(sr.CoordX, sr.CoordY) != null)).ToList();
             }
         }
-        public Player CheckForWin()
+        public bool CheckForWin()
         {
             var playersWithRemaininShips = GameDetails.Players.Where(player => !player.CurrentMap.ShipInformationList.
             Any(si => si.Ship.DeckStates.
@@ -73,9 +83,9 @@ namespace BattleShip2.BusinessLogic.Models
             if(playersWithRemaininShips.Count == 1)
             {
                 GameDetails.PlayerMaps = GameDetails.Players.Select(pl => pl.CurrentMap).ToList();
-                return playersWithRemaininShips[0];
+                return true;
             }
-            return null;
+            return false;
         }
     }
 }
