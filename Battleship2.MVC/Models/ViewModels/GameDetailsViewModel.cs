@@ -10,7 +10,7 @@ namespace Battleship2.MVC.Models.ViewModels
     {
         public Guid Id { get; set; }
         public List<string> PlayerName { get; set; }
-        public List<Map> PlayerMaps { get; set; }
+        public List<List<List<ViewCell>>> PlayerMaps { get; set; }
         public List<string> ShotInfoList { get; set; }
     }
 }

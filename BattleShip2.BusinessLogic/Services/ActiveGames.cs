@@ -19,7 +19,7 @@ namespace BattleShip2.BusinessLogic.Services
         {
             var game = new Game();
             creator.CurrentMap = new Map();
-            game.GameDetails.Players.Add(creator);
+            game.GameDetails.AddPlayer(creator);
             Games.Add(game);
             return game.Id;
         }
@@ -27,7 +27,7 @@ namespace BattleShip2.BusinessLogic.Services
         {
             var game = Games.SingleOrDefault(game => game.Id == gameId);
             connected.CurrentMap = new Map();
-            game.GameDetails.Players.Add(connected);
+            game.GameDetails.AddPlayer(connected);
         }
         public Game GetGame(Guid gameId)
         {
@@ -35,7 +35,7 @@ namespace BattleShip2.BusinessLogic.Services
         }
         public Player GetPlayerById(Guid Id)
         {
-            return Games.Select(game => game.GameDetails.Players.SingleOrDefault(p => p.Id == Id)).SingleOrDefault();
+            return Games.First(game => game.GameDetails.Players.Any(p => p.Id == Id)).GameDetails.Players.First(p => p.Id == Id);
         }
         public Game GetGameByPlayerId(Guid Id)
         {

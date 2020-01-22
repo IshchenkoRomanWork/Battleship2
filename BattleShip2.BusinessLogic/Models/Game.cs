@@ -19,17 +19,16 @@ namespace BattleShip2.BusinessLogic.Models
             Id = Guid.NewGuid();
             GameDetails = new GameDetails()
             {
-                Players = new List<Player>(),
                 ShotList = new List<GameShot>()
             };
             PlayersReady = new List<bool> { false, false };
         }
         public bool PlayerIsReady(Player player)
         {
-            bool fourDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.FourDeck) == 4;
-            bool threeDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.ThreeDeck) == 3;
-            bool twoDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.TwoDeck) == 2;
-            bool oneDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.OneDeck) == 1;
+            bool fourDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.FourDeck) == 1;
+            bool threeDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.ThreeDeck) == 2;
+            bool twoDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.TwoDeck) == 3;
+            bool oneDecksArePlaced = player.CurrentMap.ShipInformationList.Count(si => si.Ship.Type == ShipType.OneDeck) == 4;
             bool ready = fourDecksArePlaced && threeDecksArePlaced && twoDecksArePlaced && oneDecksArePlaced;
             if (ready)
             {
@@ -77,10 +76,10 @@ namespace BattleShip2.BusinessLogic.Models
         }
         public bool CheckForWin()
         {
-            var playersWithRemaininShips = GameDetails.Players.Where(player => !player.CurrentMap.ShipInformationList.
+            var playersWithNoRemainingShips = GameDetails.Players.Where(player => !player.CurrentMap.ShipInformationList.
             Any(si => si.Ship.DeckStates.
             Any(ds => ds == DeckState.Undamaged))).ToList();
-            if(playersWithRemaininShips.Count == 1)
+            if(playersWithNoRemainingShips.Count == 1)
             {
                 GameDetails.PlayerMaps = GameDetails.Players.Select(pl => pl.CurrentMap).ToList();
                 return true;

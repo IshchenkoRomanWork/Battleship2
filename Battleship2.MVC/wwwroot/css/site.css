@@ -125,8 +125,10 @@ table{
     height: 400px;
 }
 
-.shotlist 
-{
+
+nav .shotlist {  
+    overflow: hidden;
+    overflow-y: scroll;
     vertical-align: top;
 }
 

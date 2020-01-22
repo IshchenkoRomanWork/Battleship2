@@ -17,6 +17,8 @@ using BattleShip2.BusinessLogic.Services;
 using Battleship2.MVC.Filters;
 using BattleShip2.BusinessLogic.Intefaces;
 using Battleship2.MVC.Hubs;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace Battleship2.MVC
 {
@@ -32,13 +34,14 @@ namespace Battleship2.MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = Configuration.GetConnectionString("DefaultConnection");
-            //services.AddDbContext<BattleshipIdentityContext>(options => options.UseSqlServer(connectionString));
-            //services.AddDbContext<BattleShipContext>(options => options.UseSqlServer(connectionString));
+            string BattleShipConnectionString = Configuration.GetConnectionString("BattleShipConnection");
+            string IdentityConnectionString = Configuration.GetConnectionString("IdentityConnection");
+            services.AddDbContext<BattleShipIdentityContext>(options => options.UseSqlServer(IdentityConnectionString));
+            services.AddDbContext<BattleShipContext>(options => options.UseSqlServer(BattleShipConnectionString));
 
 
-            services.AddDbContext<BattleshipIdentityContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipIdentityDb"));
-            services.AddDbContext<BattleShipContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipDb"));
+            //services.AddDbContext<BattleshipIdentityContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipIdentityDb"));
+            //services.AddDbContext<BattleShipContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipDb"));
 
             services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
             services.AddScoped<UnitOfWork>();
@@ -82,13 +85,29 @@ namespace Battleship2.MVC
             app.UseAuthentication();
             app.UseAuthorization();
 
+            //var oprions = RewriteOptions()
+            //.AddRedirect("(.*)/api(.*)", Configuration)
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<BattleShipHub>("/gamehub");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "ApiRoutes",
+                    pattern: "api/{controller=Home}/{action=Index}/{id?}");
             });
+            //Proxy
+            app.Use((context, next) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api"))
+                {
+                    context.Request.Host = new HostString(Configuration["apiLocation"]);
+                }
+                return next();
+            });
+
         }
     }
 }

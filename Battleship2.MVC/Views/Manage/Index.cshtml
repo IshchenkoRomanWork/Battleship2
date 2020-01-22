@@ -17,6 +17,6 @@
                 @Html.DisplayFor(model => model.Name)
             </dd>
         </dl>
-        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Index", "Statistics", Model.Id)';">Your Statistics</button>
-        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Index", "GameDetails", Model.Id)';">Your Games</button>
-    </div>s
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Html.Raw(@Url.Action("Index", "GameDetails", new { @Id = Model.Id }))';">Your Games</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Html.Raw(@Url.Action("Index", "Statistics", new { @Id = Model.Id }))';">Your Statistics</button>
+    </div>

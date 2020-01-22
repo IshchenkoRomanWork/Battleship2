@@ -1,16 +1,13 @@
 ﻿using Battleship2.Core.Enums;
 using Battleship2.Core.Models;
-using Battleship2.MVC.Models;
 using BattleShip2.BusinessLogic.Models;
 using BattleShip2.BusinessLogic.Services;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Battleship2.MVC.Hubs
 {
@@ -19,7 +16,7 @@ namespace Battleship2.MVC.Hubs
         private UnitOfWork _unitOfWork { get; set; }
         private ActiveGames _activeGames { get; set; }
         private static ConcurrentDictionary<string, string> _connectionAndPlayerIds = new ConcurrentDictionary<string, string>();
-        public BattleShipHub(UnitOfWork unitOfWork, ActiveGames activeGames, Helper helper)
+        public BattleShipHub(UnitOfWork unitOfWork, ActiveGames activeGames)
         {
             _unitOfWork = unitOfWork;
             _activeGames = activeGames;
@@ -43,7 +40,7 @@ namespace Battleship2.MVC.Hubs
             var gameid = _activeGames.CreateGame(player);
             _connectionAndPlayerIds.AddOrUpdate(playerId, Context.ConnectionId, (key, oldvalue) => Context.ConnectionId);
             Clients.Client(_connectionAndPlayerIds.GetOrAdd(playerId, (key) => throw new Exception("ConnectionId non existent")))
-                .SendAsync("SetId", gameid);
+                .SendAsync("SetId", gameid.ToString());
         }
         public void AddShip(JsonElement[] sendData)
         {
@@ -72,9 +69,9 @@ namespace Battleship2.MVC.Hubs
             {
                 game.AddShip(player, shipInfo);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                if(ex.Data["type"] != null && (GameException)ex.Data["type"] == GameException.ShipsTouch)
+                if (ex.Data["type"] != null && (GameException)ex.Data["type"] == GameException.ShipsTouch)
                 {
                     Clients.Client(connectionId).SendAsync("ShipsCantTouch");
                 }
@@ -86,7 +83,83 @@ namespace Battleship2.MVC.Hubs
                 Clients.Client(connectionId).SendAsync("AddShip", jsonCoordList, length);
             }
         }
-
+        public void Ready(string playerId)
+        {
+            var player = _activeGames.GetPlayerById(Guid.Parse(playerId));
+            var game = _activeGames.GetGameByPlayerId(Guid.Parse(playerId));
+            game.PlayerIsReady(player);
+            if (game.PlayersReady.All(r => r))
+            {
+                foreach (var pl in game.GameDetails.Players)
+                {
+                    var playerConnectionId = _connectionAndPlayerIds.GetOrAdd(pl.Id.ToString(), (key) => throw new Exception("ConnectionId non existent"));
+                    Clients.Client(playerConnectionId).SendAsync("GameStart");
+                }
+                game.GameStart();
+                var firstPlayer = game.ActivePlayer;
+                var firstPlayerConnectionId = _connectionAndPlayerIds.GetOrAdd(firstPlayer.Id.ToString(), (key) => throw new Exception("ConnectionId non existent"));
+                Clients.Client(firstPlayerConnectionId).SendAsync("YourTurn");
+            }
+        }
+        public void PlayerLeft(string playerId)
+        {
+            var player = _activeGames.GetPlayerById(Guid.Parse(playerId));
+            var game = _activeGames.GetGameByPlayerId(Guid.Parse(playerId));
+            if (game != null)
+            {
+                game.GameDetails.RemovePlayer(player.Id);
+                if (game.GameDetails.Players.Count == 0)
+                {
+                    _activeGames.Games = new ConcurrentBag<Game>(_activeGames.Games.Where(g => g.Id != game.Id));
+                }
+                else
+                {
+                    foreach (var pl in game.GameDetails.Players)
+                    {
+                        var connectionId = _connectionAndPlayerIds.GetOrAdd(pl.Id.ToString(), (key) => throw new Exception("ConnectionId non existent"));
+                        Clients.Client(connectionId).SendAsync("OpponentLeft");
+                    }
+                }
+            }
+        }
+        public void ShotAt(JsonElement[] sendData)
+        {
+            int headX = sendData[0].GetInt32();
+            int headY = sendData[1].GetInt32();
+            string playerId = sendData[2].GetString();
+            var player = _activeGames.GetPlayerById(Guid.Parse(playerId));
+            var game = _activeGames.GetGameByPlayerId(Guid.Parse(playerId));
+            var opponent = game.GameDetails.Players.SingleOrDefault(p => p.Id != player.Id);
+            var shotResult = game.ShotAt(opponent, new Coords(headX, headY));
+            var shotInfo = game.GameDetails.ShotList.Last();
+            var jsonShotResult = JsonConvert.SerializeObject(shotResult);
+            var playerConnectionId = _connectionAndPlayerIds.GetOrAdd(player.Id.ToString(), (key) => throw new Exception("ConnectionId non existent"));
+            var opponentConnectionId = _connectionAndPlayerIds.GetOrAdd(opponent.Id.ToString(), (key) => throw new Exception("ConnectionId non existent"));
+            Clients.Client(playerConnectionId).SendAsync("YourShootResult", jsonShotResult, shotInfo.ToString());
+            Clients.Client(opponentConnectionId).SendAsync("YourFieldShooted", jsonShotResult, shotInfo.ToString());
+            if (!shotInfo.TargetHit)
+            {
+                game.ActivePlayer = opponent;
+                Clients.Client(opponentConnectionId).SendAsync("YourTurn");
+            }
+            if (game.CheckForWin())
+            {
+                Win(game, playerConnectionId, opponentConnectionId, player);
+            }
+        }
+        public void Win(Game game, string winnerConnectionId, string loserConnectionId, Player winner)
+        {
+            _unitOfWork.AddGameDetails(game.GameDetails);
+            _unitOfWork.AddStatistics(new StatisticsItem()
+            {
+                GameDate = DateTime.Now,
+                RemainingShips = winner.CurrentMap.ShipInformationList.Where(si => si.Ship.DeckStates.Any(ds => ds == DeckState.Undamaged)).Select(si=>si.Ship).ToList(),
+                GameTurnNumber = game.GameDetails.ShotList.Count,
+                WinnerName = winner.Name
+            });
+            Clients.Client(winnerConnectionId).SendAsync("GameEnded", true);
+            Clients.Client(loserConnectionId).SendAsync("GameEnded", false);
+        }
         private Direction GetDirection(Coords head, Coords tail)
         {
             Direction dir = Direction.Up;
@@ -104,53 +177,9 @@ namespace Battleship2.MVC.Hubs
             }
             if (head.CoordY < tail.CoordY)
             {
-                dir = Direction.Left;
+                dir = Direction.Down;
             }
             return dir;
-        }
-        public void Ready(string playerId)
-        {
-            var player = _activeGames.GetPlayerById(Guid.Parse(playerId));
-            var game = _activeGames.GetGameByPlayerId(Guid.Parse(playerId));
-            game.PlayerIsReady(player);
-            if(game.PlayersReady.All(r => r))
-            {
-                foreach(var pl in game.GameDetails.Players)
-                {
-                    var playerConnectionId = _connectionAndPlayerIds.GetOrAdd(pl.Id.ToString(), (key) => throw new Exception("ConnectionId non existent"));
-                    Clients.Client(playerConnectionId).SendAsync("GameStart");
-                }
-            }
-        }
-        public void ShotAt(object[] sendData)
-        {
-            int headX = (int)sendData[0];
-            int headY = (int)sendData[1];
-            string playerId = (string)sendData[1];
-            var player = _activeGames.GetPlayerById(Guid.Parse(playerId));
-            var game = _activeGames.GetGameByPlayerId(Guid.Parse(playerId));
-            var opponent = game.GameDetails.Players.SingleOrDefault(p => p.Id != player.Id);
-            var shotResult = game.ShotAt(opponent, new Coords(headX, headY));
-            var shotInfo = game.GameDetails.ShotList.Last();
-            var jsonShotResult = JsonConvert.SerializeObject(shotResult);
-            var playerConnectionId = _connectionAndPlayerIds.GetOrAdd(player.Id.ToString(), (key) => throw new Exception("ConnectionId non existent"));
-            var opponentConnectionId = _connectionAndPlayerIds.GetOrAdd(opponent.Id.ToString(), (key) => throw new Exception("ConnectionId non existent"));
-            Clients.Client(playerConnectionId).SendAsync("YourShootResult", jsonShotResult, shotInfo);
-            Clients.Client(opponentConnectionId).SendAsync("YourFieldShooted", jsonShotResult, shotInfo);
-            if(shotInfo.TargetHit)
-            {
-                Clients.Client(opponentConnectionId).SendAsync("YourTurn");
-            }
-            if(game.CheckForWin())
-            {
-                Win(game, playerConnectionId, opponentConnectionId);
-            }
-        }
-        public void Win(Game game, string winnerConnectionId, string loserConnectionId)
-        {
-            _unitOfWork.AddGameDetails(game.GameDetails);
-            Clients.Client(winnerConnectionId).SendAsync("GameEnded", true);
-            Clients.Client(loserConnectionId).SendAsync("GameEnded", false);
         }
     }
 }

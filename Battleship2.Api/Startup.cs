@@ -30,7 +30,8 @@ namespace Battleship2.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<BattleShipContext>(options => options.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()));
+            string BattleShipConnectionString = Configuration.GetConnectionString("BattleShipConnection");
+            services.AddDbContext<BattleShipContext>(options => options.UseSqlServer(BattleShipConnectionString));
 
             services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
             services.AddScoped<UnitOfWork>();

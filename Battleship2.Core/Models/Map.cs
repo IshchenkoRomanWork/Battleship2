@@ -35,6 +35,7 @@ namespace Battleship2.Core.Models
         {
             _shipInformationList = new List<ShipInformation>();
             _occupiedCoords = new List<Coords>();
+            ShotCoords = new List<Coords>();
         }
         public void AddShip(ShipInformation shipInformation)
         {
@@ -52,15 +53,15 @@ namespace Battleship2.Core.Models
             if(shipInfo != null)
             {
                 var section = shipInfo.GetCoordsFromShipInformation();
-                int deckNumber = 1;
-                for(; deckNumber < 4; deckNumber++)
+                int deckNumberHit = 1;
+                for(; deckNumberHit < 4; deckNumberHit++)
                 {
-                    if(section[deckNumber-1] == coords)
+                    if(section[deckNumberHit - 1].CoordX == coords.CoordX && section[deckNumberHit - 1].CoordY == coords.CoordY)
                     {
                         break;
                     }
                 }
-                shipInfo.Ship.DeckStates[deckNumber - 1] = DeckState.Damaged;
+                shipInfo.Ship.DeckStates[deckNumberHit - 1] = DeckState.Damaged;
                 targetHit = true;
                 shipIsDrown = shipInfo.Ship.DeckStates.All(ds => ds == DeckState.Damaged);
                 var surroundingCoords = GetSurroundingCoords(section);
@@ -115,7 +116,7 @@ namespace Battleship2.Core.Models
         private void CheckShipIsntNearAnother(List<Coords> checkedCoords) 
         {
             var surroundingCoords = GetSurroundingCoords(checkedCoords);
-            if(_occupiedCoords.Any(coord => surroundingCoords.Any(scoord => coord.CoordX == scoord.CoordX && coord.CoordY == scoord.CoordX)))
+            if(_occupiedCoords.Any(coord => surroundingCoords.Any(scoord => coord.CoordX == scoord.CoordX && coord.CoordY == scoord.CoordY)))
             {
                 Exception exception = new Exception("Ships can't touch with angles or sides");
                 exception.Data.Add("type", GameException.ShipsTouch);
@@ -165,7 +166,7 @@ namespace Battleship2.Core.Models
                         if (j < 1) j++;
                         if (j > 10) break;
                         var surCoord = new Coords(i, j);
-                        if(!surroundingCoords.Contains(surCoord))
+                        if(!surroundingCoords.Any(addedCoord => addedCoord.CoordX == surCoord.CoordX && addedCoord.CoordY == surCoord.CoordY))
                         {
                             surroundingCoords.Add(surCoord);
                         }

@@ -6,13 +6,17 @@ using System.Threading.Tasks;
 
 namespace Battleship2.MVC.Models
 {
-    public class BattleshipIdentityContext : DbContext
+    public class BattleShipIdentityContext : DbContext
     {
         public DbSet<BattleshipIdentity> Users { get; set; }
-        public BattleshipIdentityContext(DbContextOptions<BattleshipIdentityContext> options)
-            : base(options)
+        public BattleShipIdentityContext(DbContextOptions<BattleShipIdentityContext> options)
+        : base(options)
         {
             Database.EnsureCreated();
+        }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<BattleshipIdentity>().HasKey(ent => ent.Id);
         }
     }
 }

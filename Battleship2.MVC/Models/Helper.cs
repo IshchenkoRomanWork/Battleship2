@@ -12,8 +12,8 @@ namespace Battleship2.MVC.Models
     public class Helper
     {
         private UnitOfWork _unitOfWork;
-        private BattleshipIdentityContext _dBContext;
-        public Helper(UnitOfWork unitOfWork, BattleshipIdentityContext dBContext)
+        private BattleShipIdentityContext _dBContext;
+        public Helper(UnitOfWork unitOfWork, BattleShipIdentityContext dBContext)
         {
             _unitOfWork = unitOfWork;
             _dBContext = dBContext;

@@ -14,7 +14,11 @@ namespace Battleship2.Core.Models
         public Ship(int deckNumber)
         {
             Type = (ShipType)deckNumber;
-            DeckStates = new List<DeckState>(deckNumber);
+            DeckStates = new List<DeckState>();
+            for(int i = 0; i < deckNumber; i++)
+            {
+                DeckStates.Add(DeckState.Undamaged);
+            }
         }
         public Ship()
         {

@@ -1,4 +1,5 @@
-﻿using Battleship2.Core.Enums;
+﻿using Battleship2.Core.DataModels;
+using Battleship2.Core.Enums;
 using Battleship2.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -21,13 +22,14 @@ namespace Battleship2.Data
         public DbSet<StatisticsItem> Statistics  { get; set; }
         public DbSet<Coords> Coords { get; set; }
         public DbSet<Coords> LogInfos { get; set; }
+        public DbSet<GameDetailsPlayer> GameDetailsPlayers { get; set; }
         public BattleShipContext(DbContextOptions<BattleShipContext> options)
         : base(options)
-        { 
-        Database.EnsureCreated();
+        {
+            
         }
         protected override void OnModelCreating(ModelBuilder builder)
-        {
+        { 
             builder.Entity<Ship>().HasKey(s => s.Id);
             builder.Entity<Ship>().Property(s => s.DeckStates)
                                   .HasConversion(dsList => dsList.Select(ds => new DeckStateWrapper(ds)),
@@ -43,14 +45,24 @@ namespace Battleship2.Data
             builder.Entity<GameDetails>().HasKey(gd => gd.Id);
             builder.Entity<GameDetails>().HasMany(gd => gd.PlayerMaps).WithOne();
             builder.Entity<GameDetails>().HasMany(gd => gd.ShotList).WithOne();
-            builder.Entity<GameDetails>().HasMany(gd => gd.Players).WithOne();
+
+            builder.Entity<GameDetailsPlayer>().HasKey(gdp => gdp.Id);
+            builder.Entity<GameDetailsPlayer>()
+                .HasOne(gdp => gdp.Player)
+                .WithMany(p => p.PlayerRelationList)
+                .HasForeignKey(gdp => gdp.PlayerId);
+
+            builder.Entity<GameDetailsPlayer>()
+                .HasOne(gdp => gdp.GameDetails)
+                .WithMany(gd => gd.PlayerRelationList)
+                .HasForeignKey(gdp => gdp.GameDetailsId);
+
+            builder.Entity<Player>().HasKey(p => p.Id);
+            builder.Entity<Player>().Ignore(p => p.CurrentMap);
 
             builder.Entity<Map>().HasKey(m => m.Id);
             builder.Entity<Map>().HasMany(m => m.ShipInformationList).WithOne();
             builder.Entity<Map>().HasMany(m => m.ShotCoords).WithOne();
-
-            builder.Entity<Player>().HasKey(p => p.Id);
-            builder.Entity<Player>().Ignore(p => p.CurrentMap);
 
             builder.Entity<ShipInformation>().HasKey(si => si.Id);
             builder.Entity<ShipInformation>().HasOne(si => si.Ship);

@@ -18,8 +18,8 @@ namespace Battleship2.MVC.Controllers
     public class GameDetailsController : Controller
     {
         private UnitOfWork _unitOfWork;
-        private BattleshipIdentityContext _dBContext;
-        public GameDetailsController(UnitOfWork unitOfWork, BattleshipIdentityContext dBContext)
+        private BattleShipIdentityContext _dBContext;
+        public GameDetailsController(UnitOfWork unitOfWork, BattleShipIdentityContext dBContext)
         {
             _unitOfWork = unitOfWork;
             _dBContext = dBContext;
@@ -35,9 +35,9 @@ namespace Battleship2.MVC.Controllers
             }
             return View(viewModel);
         }
-        public IActionResult GameDetailsItem(Guid gameDetailsId)
+        public IActionResult Details(Guid Id)
         {
-            var details = _unitOfWork.GetGameDetails(gameDetailsId);
+            var details = _unitOfWork.GetGameDetails(Id);
             var viewModel = ViewModelParse(details);
             return View(viewModel);
         }
@@ -45,6 +45,11 @@ namespace Battleship2.MVC.Controllers
         private GameDetailsViewModel ViewModelParse(GameDetails details)
         {
             var shotInfoList = new List<string>();
+            var maps = new List<List<List<ViewCell>>>()
+            {
+                new List<List<ViewCell>>(),
+                new List<List<ViewCell>>()
+            };
             foreach (var shot in details.ShotList)
             {
                 string shotInfo = "Player " + shot.Shooter.Name +
@@ -59,11 +64,30 @@ namespace Battleship2.MVC.Controllers
                 {
                     string.Concat(shotInfo, " Ship is drown!");
                 }
+                shotInfoList.Add(shotInfo);
+            }
+            for (int i = 1; i <= 10; i++)
+            {
+                maps[0].Add(new List<ViewCell>());
+                maps[1].Add(new List<ViewCell>());
+                for (int j = 1; j <= 10; j++)
+                {
+                    maps[0][i - 1].Add(new ViewCell()
+                    {
+                        Ship = details.PlayerMaps[0].GetShipInformation(i, j) == null,
+                        Shot = details.PlayerMaps[0].ShotCoords.Any(coord => coord.CoordX == i && coord.CoordY == j)
+                    });
+                    maps[1][i - 1].Add(new ViewCell()
+                    {
+                        Ship = details.PlayerMaps[1].GetShipInformation(i, j) == null,
+                        Shot = details.PlayerMaps[1].ShotCoords.Any(coord => coord.CoordX == i && coord.CoordY == j)
+                    });
+                }
             }
             return new GameDetailsViewModel()
             {
                 PlayerName = details.Players.Select(p => p.Name).ToList(),
-                PlayerMaps = details.PlayerMaps.ToList(),
+                PlayerMaps = maps,
                 ShotInfoList = shotInfoList,
                 Id = details.Id
             };

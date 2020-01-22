@@ -8,7 +8,7 @@ namespace Battleship2.MVC.Controllers
 {
     public class StatisticsController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(Guid? playerid)
         {
             return View();
         }

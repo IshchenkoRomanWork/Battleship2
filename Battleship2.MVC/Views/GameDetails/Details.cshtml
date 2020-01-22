@@ -1,0 +1,93 @@
+﻿@model Battleship2.MVC.Models.ViewModels.GameDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Game Details</h1>
+
+<div>
+    <h4>GameDetailsViewModel</h4>
+    <hr />
+    <table cellpadding="10" r>
+        <tr>
+            <td class="maptable">
+                <h3>Your map</h3>
+                <table cellpadding="1">
+                    @for (int i = 1; i <= 10; i++)
+                    {
+                        <tr>
+                            @for (int j = 1; j <= 10; j++)
+                            {
+                                if (Model.PlayerMaps[0][j-1][10 - i].Ship)
+                                {
+                                    <td class="noship cell" name="shipcell">
+                                        @if (Model.PlayerMaps[0][j-1][10 - i].Shot)
+                                        {
+                                            <div class="hittedfield"></div>
+                                        }
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="ship cell" name="shipcell">
+                                        @if (Model.PlayerMaps[0][j-1][10 - i].Shot)
+                                        {
+                                            <div class="hittedfield"></div>
+                                        }
+                                    </td>
+                                }
+                            }
+                        </tr>
+                    }
+                </table>
+            </td>
+            <td class="maptable">
+                <h3>Your opponent's map</h3>
+                <table cellpadding="1">
+                    @for (int i = 1; i <= 10; i++)
+                    {
+                        <tr>
+                            @for (int j = 1; j <= 10; j++)
+                            {
+                                if (Model.PlayerMaps[1][j-1][10 - i].Ship)
+                                {
+                                    <td class="noship cell" name="shipcell">
+                                        @if (Model.PlayerMaps[1][j-1][10 - i].Shot)
+                                        {
+                                            <div class="hittedfield"></div>
+                                        }
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="ship cell" name="shipcell">
+                                        @if (Model.PlayerMaps[1][j-1][10 - i].Shot)
+                                        {
+                                            <div class="hittedfield"></div>
+                                        }
+                                    </td>
+                                }
+                            }
+                        </tr>
+                    }
+                </table>
+            </td>
+        </tr>
+    </table>
+    <h2>Players</h2>
+    @foreach (var player in Model.PlayerName)
+    {
+        @Html.Label(player, player);
+    }
+    <h2>Turns</h2>
+    @foreach (var shot in Model.ShotInfoList)
+ 
+        @Html.Label(shot, shot);
+    }
+    <dl class="row">
+    </dl>
+</div>
+<div>
+</div>

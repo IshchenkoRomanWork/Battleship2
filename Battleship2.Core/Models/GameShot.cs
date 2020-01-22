@@ -11,5 +11,20 @@ namespace Battleship2.Core.Models
         public Player Shooter { get; set; }
         public bool TargetHit { get; set; }
         public bool ShipIsDrown { get; set; }
+
+        public override string ToString()
+        {
+            string value = string.Format("Player {0} shooted at {1}, {2}.", Shooter.Name, TargetCoords.CoordX, TargetCoords.CoordY);
+            if(TargetHit)
+            {
+                value += " Ship hit!";
+            }
+            if (ShipIsDrown)
+            {
+                value += " Ship and drown!";
+            }
+            return value;
+
+        }
     }
 }

@@ -27,6 +27,7 @@ namespace BattleShip2.BusinessLogic.Services
             _gameDetails = gameDetails;
             _statistics = statistics;
         }
+
         public List<StatisticsItem> GetStatistics(ICollection<IFilter> filters, SortingItem sorting)
         {
             var allStatistics = _statistics.GetAll();
@@ -52,7 +53,8 @@ namespace BattleShip2.BusinessLogic.Services
         }
         public List<GameDetails> GetGameDetailsList(Player player)
         {
-            return _gameDetails.GetAll().
+            var all = _gameDetails.GetAll().ToList();
+            return all.
                 Where(gd => gd.Players.
                 Any(pl => pl.Id == player.Id)).
                 ToList();

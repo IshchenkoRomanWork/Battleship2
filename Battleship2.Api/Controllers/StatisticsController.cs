@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 namespace Battleship2.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class StatisticsController : Controller
     {
         private UnitOfWork _unitOfWork { get; set; }
@@ -21,16 +21,15 @@ namespace Battleship2.Api.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        [HttpGet]
-        [Route("[action]")]
-        public List<StatisticsItem> Get(string requestQuery)
+        [HttpGet("get", Name = "GetStatistics")]
+        public StatisticsItem[] GetStatistics(object data)
         {
             var settings = new JsonSerializerSettings()
             {
                 TypeNameHandling = TypeNameHandling.All
             };
-            FiltersWithSorting item = JsonConvert.DeserializeObject<FiltersWithSorting>(requestQuery, settings);
-            return _unitOfWork.GetStatistics(item.Filters, item.Sorting);
+            FiltersWithSorting item = JsonConvert.DeserializeObject<FiltersWithSorting>(data.ToString(), settings);
+            return _unitOfWork.GetStatistics(item.Filters, item.Sorting).ToArray();
         }
     }
 }

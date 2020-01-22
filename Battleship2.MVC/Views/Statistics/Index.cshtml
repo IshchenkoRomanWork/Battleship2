@@ -1,7 +1,48 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
+﻿@model IEnumerable<Battleship2.Core.Models.StatisticsItem>
 
-<h1>Index</h1>
+    @{
+    ViewData["Title"] = "Statistics";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script src="~/js/statistics.js"></script>
+    <h1>Statitistics</h1>
+
+    <input type="button" value="Filter" name="filterbutton" />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <label>Winner Name</label>
+                    <form name="winnerfilterform">
+                        <input type="text" name="winnerfilterinput" />
+                    </form>
+                </th>
+                <th>
+                    <label>Game Turn Number</label>
+                    <form name="turnsfilterform">
+                        <input type="text" name="turnsfilterinput" />
+                    </form>
+                </th>
+                <th>
+                    <label name="shipsortheader">Remainin winner ships</label>
+                    <form name="shipsfilterform">
+                        <input type="text" name="shipsfilterinput" />
+                    </form>
+                </th>
+                <th>
+                    <label name="datesortheader">Game Date</label>
+                    <form name="datefilterform">
+                        <input type="text" name="datefilterinput" />
+                    </form>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 

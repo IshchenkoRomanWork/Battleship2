@@ -27,8 +27,10 @@ $("td[name=shipcell]").hover(
 );
 $("td[name=shipcell]").on("click",
     function () {
-        if (shipAdditionLocked == false) {
-            if (shipshead == null) {
+        if (shipAdditionLocked == false)
+        {
+            if (shipshead == null && $(this).hasClass('ship') == false)
+            {
                 shipshead = $(this);
                 $(this).removeClass('noship');
                 $(this).addClass('ship');
@@ -40,13 +42,14 @@ $("td[name=shipcell]").on("click",
                 targetx = parseInt($(this).attr('data-x'));
                 targety = parseInt($(this).attr('data-y'));
                 var length;
-                if (((length = Math.abs(headx - targetx)) < 4 && heady == targety) || ((length = Math.abs(heady - targety)) < 4 && headx == targetx)) {
+                if ((((length = Math.abs(headx - targetx)) < 4 && heady == targety) || ((length = Math.abs(heady - targety)) < 4 && headx == targetx)) &&
+                    ($(this).hasClass('ship') == false || (headx == targetx && heady == targety)))
+                {
                     var shipavailable = new Boolean(false);
                     length++;
                     availships.forEach(item => {
                         if (item[0] == length && item[1] != 0) {
                             shipavailable = true;
-                            item[1]--;
                         }
                     });
                     if (shipavailable == true) {
@@ -83,12 +86,12 @@ $('#readybutton').on("click", function () {
         alert("You still have unplaced ships!")
     }
 })
-$('#td[name=opshipcell]').on("click", function () {
+$('td[name=opshipcell]').on("click", function () {
+
     if (!shootingLocked && youareactiveplayer) {
-        headx = parseInt(shipshead.attr('data-x'));
-        heady = parseInt(shipshead.attr('data-y'));
-        youareactiveplayer = false;
-        hubConnection.invoke("ShotAt", [headX, headY, jsPlayerId]);
+        headx = parseInt($(this).attr('data-x'));
+        heady = parseInt($(this).attr('data-y'));
+        hubConnection.invoke("ShotAt", [headx, heady, jsPlayerId]);
     }
 })
 hubConnection.on("AddShip", function (jsonshipsection, length) {
@@ -100,10 +103,12 @@ hubConnection.on("AddShip", function (jsonshipsection, length) {
         $(cellid).removeClass('noship')
         $(cellid).addClass('ship')
     })
+    availships[length - 1][1]--;
     $('td[data-shiptype=' + length.toString() + ']:first').remove();
 });
 hubConnection.on("GameStart", function () {
     shootingLocked = false;
+    alert("Game has started");
     $('#availableships').hide();
 });
 hubConnection.on("ShipsCantTouch", function () {
@@ -114,7 +119,7 @@ hubConnection.on("OpponentConnected", function (opponentsname) {
     $('#opponentsname').text("Your opponent's Name: " + opponentsname);
 });
 hubConnection.on("YourFieldShooted", function (shootedJsonData, shotdata) {
-    $('shotlist').append('<li class="list-group-item list-group-item-primary"' + shotdata + '</li>')
+    $('#shotlist').append('<li class="list-group-item">' + shotdata + '</li>')
     var shootedData = JSON.parse(JSON.stringify(eval("(" + shootedJsonData + ")")));
     shootedData.forEach(shootedcoord => {
         var headXstring = shootedcoord.Item1.CoordX.toString();
@@ -124,7 +129,7 @@ hubConnection.on("YourFieldShooted", function (shootedJsonData, shotdata) {
     })
 });
 hubConnection.on("YourShootResult", function (shootedJsonData, shotdata) {
-    $('shotlist').append('<li class="list-group-item list-group-item-primary"' + shotdata + '</li>')
+    $('#shotlist').append('<li class="list-group-item">' + shotdata + '</li>')
     var shootedData = JSON.parse(JSON.stringify(eval("(" + shootedJsonData + ")")));
     shootedData.forEach(shootedcoord => {
         var x = shootedcoord.Item1.CoordX.toString();
@@ -132,7 +137,7 @@ hubConnection.on("YourShootResult", function (shootedJsonData, shotdata) {
         var cellid = "[data-x=" + x + "][data-y=" + y + "][name=opshipcell]";
         $(cellid).append('<div class="hittedfield"></div>')
         $(cellid).removeClass("hiddencell")
-        if (shootedcoord.Item2 = true) {
+        if (shootedcoord.Item2 == true) {
             $(cellid).addClass("opponentship")
         }
         else {
@@ -141,30 +146,37 @@ hubConnection.on("YourShootResult", function (shootedJsonData, shotdata) {
     })
 });
 hubConnection.on("YourTurn", function () {
+    alert("Your Turn!")
     youareactiveplayer = true;
 });
 hubConnection.on("SetId", function (data) {
-    $('#gamesid').val(data);
+    $('#gamesid').text($('#gamesid').text() + data);
 });
 hubConnection.on("GameEnded", function (youarewinner) {
     if (youarewinner == true) {
-        confirm("Youve Won!");
+        confirm("You've Won!");
     }
     else {
-        confirm("Youve Lost");
-    }
-    $.get("Game/Win");
+        confirm("You've Lost");
+    } 
+    window.location.href = '/Game/Win'
 });
-/*async () => { await */
-hubConnection.start().then(function ()
-    {
-    if (new Boolean(jsGameIsCreated) == false) {
-        hubConnection.invoke('PlayerConnected', jsPlayerId, jsGameId);
-    }
-        else {
+hubConnection.on("OpponentLeft", function ()
+{
+    alert("Your opponent left")
+    $('#opponentsname').text("Your opponent's Name");
+});
+
+hubConnection.start().then(function () {
+    if (jsGameIsCreated == 'True') {
         hubConnection.invoke('GameCreated', jsPlayerId);
     }
-}).catch(function (err) {
-    return console.error(err.toString());
+        else {
+        hubConnection.invoke('PlayerConnected', jsPlayerId, jsGameId);
+    }
+
+    $(window).on("unload", function () {
+        hubConnection.invoke("PlayerLeft", jsPlayerId);
+    })
 });
-/* }*/
+

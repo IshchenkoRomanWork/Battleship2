@@ -16,10 +16,10 @@ namespace Battleship2.MVC.Controllers
 {
     public class AccountController : Controller
     {
-        private BattleshipIdentityContext db;
+        private BattleShipIdentityContext db;
         private UnitOfWork _unitOfWork;
 
-        public AccountController(BattleshipIdentityContext context , UnitOfWork unitOfWork)
+        public AccountController(BattleShipIdentityContext context , UnitOfWork unitOfWork)
         {
             db = context;
             _unitOfWork = unitOfWork;

@@ -1,10 +1,8 @@
-﻿using Battleship2.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace Battleship2.MVC.Models
+namespace Battleship2.MVC
 {
     public class BattleshipIdentity
     {
