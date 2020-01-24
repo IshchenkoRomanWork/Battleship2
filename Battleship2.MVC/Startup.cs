@@ -39,6 +39,11 @@ namespace Battleship2.MVC
             services.AddDbContext<BattleShipIdentityContext>(options => options.UseSqlServer(IdentityConnectionString));
             services.AddDbContext<BattleShipContext>(options => options.UseSqlServer(BattleShipConnectionString));
 
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AutomaticAuthentication = false;
+            });
+
 
             //services.AddDbContext<BattleshipIdentityContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipIdentityDb"));
             //services.AddDbContext<BattleShipContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipDb"));

@@ -24,10 +24,6 @@ a {
   border-color: #1861ac;
 }
 
-table {
-    border-collapse:separate
-}
-
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -73,64 +69,3 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
-/* Game table */
-table{
-    border: 3px solid black;
-    margin: 3px;
-}
-
-.cell {
-    width: 40px;
-    height: 40px;
-    border: 5px solid black;
-}
-
-.ship {
-    background-color: blue;
-}
-
-.noship {
-    background-color: white
-}
-
-.hiddencell {
-    background-color: lightgray
-}
-.opponentship {
-    background-color: darkred
-}
-.hittedfield {
-    width: 80%;
-    height: 80%;
-    background-color: brown
-}
-
-.shipover {
-    background-color: yellow
-}
-
-.shipexamplecell{
-    border: 5px solid black;
-    width: 50px;
-    height: 200px;
-}
-.shipexample {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-.shipexample.ship{
-    margin:2px;
-}
-.maptable 
-{
-    margin: 5px;
-    width: 400px;
-    height: 400px;
-}
-
-#shotlist {  
-    overflow: scroll;
-    vertical-align: top;
-}
-/* Game table */

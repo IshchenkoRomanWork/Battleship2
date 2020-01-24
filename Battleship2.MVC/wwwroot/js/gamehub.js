@@ -109,7 +109,7 @@ hubConnection.on("AddShip", function (jsonshipsection, length) {
 hubConnection.on("GameStart", function () {
     shootingLocked = false;
     alert("Game has started");
-    $('#availableships').hide();
+    $('#setup').hide();
 });
 hubConnection.on("ShipsCantTouch", function () {
     alert("Ships can't touch with angles or sides")

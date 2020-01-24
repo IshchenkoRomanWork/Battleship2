@@ -37,38 +37,36 @@
             </table>
         </td>
         <td class="shotlist">
-            <nav>
-                <ul class="list-group" id="shotlist">
-                    <li class="list-group-item list-group-item-primary">Game actions are displayed here</li>
-                </ul>
-            </nav>
+            <ul class="list-group" id="shotlist">
+                <li class="list-group-item list-group-item-primary">Game actions are displayed here</li>
+            </ul>
         </td>
     </tr>
 </table>
 
-<table id="availableships">
-    <tr>
-        <td><h3>Your Unadded Ships</h3></td>
-    </tr>
-    <tr>
-        @for (int i = 1; i <= 4; i++)
-        {
-            @for (int j = i; j <= 4; j++)
+<div id="setup">
+    <h3>Your Unadded Ships</h3>
+    <table id="availableships">
+        <tr>
+            @for (int i = 1; i <= 4; i++)
             {
-                <td data-shiptype=@i.ToString() class="shipexamplecell">
-                    <div class="shipexample">
-                        @for (int l = 0; l < i; l++)
-                        {
-                            <div class="cell ship"></div>
-                        }
-                    </div>
-                </td>
+                @for (int j = i; j <= 4; j++)
+                {
+                    <td data-shiptype=@i.ToString() class="shipexamplecell">
+                        <div class="shipexample">
+                            @for (int l = 0; l < i; l++)
+                            {
+                                <div class="cell ship"></div>
+                            }
+                        </div>
+                    </td>
+                }
             }
-        }
-    </tr>
-</table>
-<div class="border-top">
-    <button type="button" class="btn btn-primary btn-lg" id="readybutton">Ready</button>
+        </tr>
+    </table>
+    <div class="border-top">
+        <button type="button" class="btn btn-primary btn-lg" id="readybutton">Ready</button>
+    </div>
 </div>
 <script>
     var jsGameId = '@Model.GameId';

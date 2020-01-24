@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Battleship2.MVC
+namespace TempMVC
 {
     public class Program
     {
@@ -21,10 +20,7 @@ namespace Battleship2.MVC
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder
-                       .UseContentRoot(Directory.GetCurrentDirectory())
-                       .UseIISIntegration()
-                       .UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }
