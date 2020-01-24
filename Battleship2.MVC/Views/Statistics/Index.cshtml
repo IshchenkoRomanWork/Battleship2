@@ -11,14 +11,14 @@
     <script src="~/js/statistics.js"></script>
     <h1>Statitistics</h1>
 
-    <input type="button" value="Filter" name="filterbutton" />
+    <input type="button" value="Filter" name="filterbutton" onclick="GetData()" />
     <table class="table">
         <thead>
             <tr>
                 <th>
                     <label>Winner Name</label>
                     <form name="winnerfilterform">
-                        <input type="text" name="winnerfilterinput" />
+                        <input type="text" name="winnerfilterinput" value="@ViewBag.PlayerName"/>
                     </form>
                 </th>
                 <th>

@@ -1,8 +1,4 @@
-﻿let currentSorting = "desc/ship";
-
-$("filterbutton").on("click", function () {
-    GetData();
-});
+﻿let currentSorting = "desc/date";
 
 $("th[name=shipsortheader]").on("click", function () {
     if (currentSorting == "desc/ship") {
@@ -22,48 +18,55 @@ $("th[name=datesortheader]").on("click", function () {
 });
 
 function GetData() {
-    var jsonArray = [{
+    var jsonArray = {
         "name": document.forms["winnerfilterform"].elements["winnerfilterinput"].value,
         "remainingShips": document.forms["shipsfilterform"].elements["shipsfilterinput"].value,
         "gameDates": document.forms["datefilterform"].elements["datefilterinput"].value,
         "gameTurns": document.forms["turnsfilterform"].elements["turnsfilterinput"].value,
         "sorting": currentSorting
-    }]
+    }
     var json = JSON.stringify(jsonArray);
-    $.get("/api/statistics/get", json,
-        function (data) {
-        console.log(data);
-        var rows = document.querySelector("tbody");
-        $("tbody").empty();
-        data.forEach(function (d) {
-            console.log(d);
-            rows.append(row(d));
-        });
+    $.ajax({
+        type: "GET",
+        url: "/api/statistics/get",
+        dataType: "json",
+        data: "data=" + json,
+        success : function(data) {
+            console.log(data);
+            var rows = document.querySelector("tbody");
+            $("tbody").empty();
+            data.forEach(function (d) {
+                console.log(d);
+                $("tbody").append(row(d))
+            });
+        }
     });
 }
 
 function row(stItem) {
     var row = "<tr>"
-    row.append("<td>")
-    row.append.stItem[0];
-    row.append("</td>")
-    row.append("<td>")
-    row.append.stItem[1];
-    row.append("</td>")
-    row.append("<td>")
-    row.append.stItem[2];
-    row.append("</td>")
-    row.append("<td>")
-    row.append.stItem[3];
-    row.append("</td>")
-    row.append("</tr>")
-    return 
+    row = row.concat("<td>")
+    row = row.concat(stItem.winnerName);
+    row = row.concat("</td>")
+    row = row.concat("<td>")
+    row = row.concat(stItem.gameTurnNumber);
+    row = row.concat("</td>")
+    row = row.concat("<td>")
+    row = row.concat(stItem.remainingShips);
+    row = row.concat("</td>")
+    row = row.concat("<td>")
+    row = row.concat(stItem.gameDate);
+    row = row.concat("</td>")
+    row = row.concat("</tr>")
+    return row
 }
 
 $(document).ready(() => {
     $(function () {
         $('input[name="datefilterinput"]').daterangepicker();
-
+        var today = new Date();
+        $('input[name="datefilterinput"]').data('daterangepicker').setStartDate(new Date(today.getFullYear() - 1, today.getMonth()));
+        $('input[name="datefilterinput"]').data('daterangepicker').setEndDate(new Date(today.getFullYear() + 1, today.getMonth()));
         GetData();
     });
 })

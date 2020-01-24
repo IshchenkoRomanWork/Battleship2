@@ -8,7 +8,7 @@ namespace Battleship2.Core.Models
     {
         public int GameTurnNumber { get; set; }
         public string WinnerName { get; set; }
-        public List<Ship> RemainingShips { get; set; }
+        public int RemainingShips { get; set; }
         public DateTime GameDate { get; set; }
     }
 }

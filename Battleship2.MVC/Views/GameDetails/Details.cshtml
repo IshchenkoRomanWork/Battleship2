@@ -20,10 +20,10 @@
                         <tr>
                             @for (int j = 1; j <= 10; j++)
                             {
-                                if (Model.PlayerMaps[0][j-1][10 - i].Ship)
+                                if (Model.PlayerMaps[0][j - 1][10 - i].Ship)
                                 {
                                     <td class="noship cell" name="shipcell">
-                                        @if (Model.PlayerMaps[0][j-1][10 - i].Shot)
+                                        @if (Model.PlayerMaps[0][j - 1][10 - i].Shot)
                                         {
                                             <div class="hittedfield"></div>
                                         }
@@ -32,7 +32,7 @@
                                 else
                                 {
                                     <td class="ship cell" name="shipcell">
-                                        @if (Model.PlayerMaps[0][j-1][10 - i].Shot)
+                                        @if (Model.PlayerMaps[0][j - 1][10 - i].Shot)
                                         {
                                             <div class="hittedfield"></div>
                                         }
@@ -51,10 +51,10 @@
                         <tr>
                             @for (int j = 1; j <= 10; j++)
                             {
-                                if (Model.PlayerMaps[1][j-1][10 - i].Ship)
+                                if (Model.PlayerMaps[1][j - 1][10 - i].Ship)
                                 {
                                     <td class="noship cell" name="shipcell">
-                                        @if (Model.PlayerMaps[1][j-1][10 - i].Shot)
+                                        @if (Model.PlayerMaps[1][j - 1][10 - i].Shot)
                                         {
                                             <div class="hittedfield"></div>
                                         }
@@ -63,7 +63,7 @@
                                 else
                                 {
                                     <td class="ship cell" name="shipcell">
-                                        @if (Model.PlayerMaps[1][j-1][10 - i].Shot)
+                                        @if (Model.PlayerMaps[1][j - 1][10 - i].Shot)
                                         {
                                             <div class="hittedfield"></div>
                                         }
@@ -80,11 +80,13 @@
     @foreach (var player in Model.PlayerName)
     {
         @Html.Label(player, player);
+        @Html.Label("", "  ");
     }
     <h2>Turns</h2>
     @foreach (var shot in Model.ShotInfoList)
- 
+
         @Html.Label(shot, shot);
+        @Html.Label("", " | ");
     }
     <dl class="row">
     </dl>

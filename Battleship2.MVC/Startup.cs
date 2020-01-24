@@ -99,14 +99,15 @@ namespace Battleship2.MVC
                     pattern: "api/{controller=Home}/{action=Index}/{id?}");
             });
             //Proxy
-            app.Use((context, next) =>
-            {
-                if (context.Request.Path.StartsWithSegments("/api"))
-                {
-                    context.Request.Host = new HostString(Configuration["apiLocation"]);
-                }
-                return next();
-            });
+            //app.Use((context, next) =>
+            //{
+            //    if (context.Request.Path.StartsWithSegments("/api"))
+            //    {
+            //        context.Request.Host = new HostString(Configuration["apiLocation"]);
+            //        context.Request.
+            //    }
+            //    return next();
+            //});
 
         }
     }

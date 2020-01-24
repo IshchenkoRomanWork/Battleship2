@@ -15,29 +15,29 @@ namespace BattleShip2.BusinessLogic.Services
         {
             Games = new ConcurrentBag<Game>();
         }
-        public Guid CreateGame(Player creator)
+        public int CreateGame(Player creator)
         {
             var game = new Game();
             creator.CurrentMap = new Map();
-            game.GameDetails.AddPlayer(creator);
+            game.GameDetails.Players.Add(creator);
             Games.Add(game);
             return game.Id;
         }
-        public void ConnectToGame(Player connected, Guid gameId)
+        public void ConnectToGame(Player connected, int gameId)
         {
             var game = Games.SingleOrDefault(game => game.Id == gameId);
             connected.CurrentMap = new Map();
-            game.GameDetails.AddPlayer(connected);
+            game.GameDetails.Players.Add(connected);
         }
-        public Game GetGame(Guid gameId)
+        public Game GetGame(int gameId)
         {
             return Games.SingleOrDefault(game => game.Id == gameId);
         }
-        public Player GetPlayerById(Guid Id)
+        public Player GetPlayerById(int Id)
         {
             return Games.First(game => game.GameDetails.Players.Any(p => p.Id == Id)).GameDetails.Players.First(p => p.Id == Id);
         }
-        public Game GetGameByPlayerId(Guid Id)
+        public Game GetGameByPlayerId(int Id)
         {
             return Games.SingleOrDefault(game => game.GameDetails.Players.Any(p => p.Id == Id));
         }

@@ -22,7 +22,7 @@
                 @Html.Label("",item.PlayerName[0] + " vs " + item.PlayerName[1])
             </th>
             <td>
-                @Html.ActionLink("Details", "Details", new { item.Id }) |
+                @Html.ActionLink("Details", "Details", new { item.Id, item.PlayerId})
             </td>
         </tr>
 }

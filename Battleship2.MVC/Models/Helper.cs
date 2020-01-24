@@ -22,7 +22,7 @@ namespace Battleship2.MVC.Models
         public Player GetPlayerFromRequest(HttpRequest request)
         {
             var IdentityId = request.HttpContext.User.Claims.First(c => c.ValueType == "Id").Value;
-            var Identity = _dBContext.Set<BattleshipIdentity>().AsQueryable().FirstOrDefaultAsync(e => e.Id == Guid.Parse(IdentityId)).Result;
+            var Identity = _dBContext.Set<BattleshipIdentity>().AsQueryable().FirstOrDefaultAsync(e => e.Id == Int32.Parse(IdentityId)).Result;
             return _unitOfWork.GetPlayer(Identity.AssociatedPlayerId);
         }
     }

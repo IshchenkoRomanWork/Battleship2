@@ -24,10 +24,10 @@ namespace Battleship2.MVC.Hubs
         public void PlayerConnected(string playerId, string gameId)
         {
             var connectionId = Context.ConnectionId;
-            Player player = _unitOfWork.GetPlayer(Guid.Parse(playerId));
-            _activeGames.ConnectToGame(player, Guid.Parse(gameId));
-            var game = _activeGames.GetGame(Guid.Parse(gameId));
-            var opponent = game.GameDetails.Players.SingleOrDefault(p => p.Id != Guid.Parse(playerId));
+            Player player = _unitOfWork.GetPlayer(Int32.Parse(playerId));
+            _activeGames.ConnectToGame(player, Int32.Parse(gameId));
+            var game = _activeGames.GetGame(Int32.Parse(gameId));
+            var opponent = game.GameDetails.Players.SingleOrDefault(p => p.Id != Int32.Parse(playerId));
 
             _connectionAndPlayerIds.AddOrUpdate(playerId, connectionId, (key, oldvalue) => Context.ConnectionId);
             Clients.Client(connectionId).SendAsync("OpponentConnected", opponent.Name);
@@ -36,7 +36,7 @@ namespace Battleship2.MVC.Hubs
         }
         public void GameCreated(string playerId)
         {
-            Player player = _unitOfWork.GetPlayer(Guid.Parse(playerId));
+            Player player = _unitOfWork.GetPlayer(Int32.Parse(playerId));
             var gameid = _activeGames.CreateGame(player);
             _connectionAndPlayerIds.AddOrUpdate(playerId, Context.ConnectionId, (key, oldvalue) => Context.ConnectionId);
             Clients.Client(_connectionAndPlayerIds.GetOrAdd(playerId, (key) => throw new Exception("ConnectionId non existent")))
@@ -50,7 +50,7 @@ namespace Battleship2.MVC.Hubs
             int tailX = sendData[2].GetInt32();
             int tailY = sendData[3].GetInt32();
             int length = sendData[4].GetInt32();
-            Guid playerId = Guid.Parse(sendData[5].GetString());
+            int playerId = Int32.Parse(sendData[5].GetString());
 
             Game game = _activeGames.GetGameByPlayerId(playerId);
             Player player = _activeGames.GetPlayerById(playerId);
@@ -85,8 +85,8 @@ namespace Battleship2.MVC.Hubs
         }
         public void Ready(string playerId)
         {
-            var player = _activeGames.GetPlayerById(Guid.Parse(playerId));
-            var game = _activeGames.GetGameByPlayerId(Guid.Parse(playerId));
+            var player = _activeGames.GetPlayerById(Int32.Parse(playerId));
+            var game = _activeGames.GetGameByPlayerId(Int32.Parse(playerId));
             game.PlayerIsReady(player);
             if (game.PlayersReady.All(r => r))
             {
@@ -103,11 +103,11 @@ namespace Battleship2.MVC.Hubs
         }
         public void PlayerLeft(string playerId)
         {
-            var player = _activeGames.GetPlayerById(Guid.Parse(playerId));
-            var game = _activeGames.GetGameByPlayerId(Guid.Parse(playerId));
+            var player = _activeGames.GetPlayerById(Int32.Parse(playerId));
+            var game = _activeGames.GetGameByPlayerId(Int32.Parse(playerId));
             if (game != null)
             {
-                game.GameDetails.RemovePlayer(player.Id);
+                game.GameDetails.Players.RemoveAll(p => p.Id == player.Id);
                 if (game.GameDetails.Players.Count == 0)
                 {
                     _activeGames.Games = new ConcurrentBag<Game>(_activeGames.Games.Where(g => g.Id != game.Id));
@@ -127,8 +127,8 @@ namespace Battleship2.MVC.Hubs
             int headX = sendData[0].GetInt32();
             int headY = sendData[1].GetInt32();
             string playerId = sendData[2].GetString();
-            var player = _activeGames.GetPlayerById(Guid.Parse(playerId));
-            var game = _activeGames.GetGameByPlayerId(Guid.Parse(playerId));
+            var player = _activeGames.GetPlayerById(Int32.Parse(playerId));
+            var game = _activeGames.GetGameByPlayerId(Int32.Parse(playerId));
             var opponent = game.GameDetails.Players.SingleOrDefault(p => p.Id != player.Id);
             var shotResult = game.ShotAt(opponent, new Coords(headX, headY));
             var shotInfo = game.GameDetails.ShotList.Last();
@@ -153,7 +153,7 @@ namespace Battleship2.MVC.Hubs
             _unitOfWork.AddStatistics(new StatisticsItem()
             {
                 GameDate = DateTime.Now,
-                RemainingShips = winner.CurrentMap.ShipInformationList.Where(si => si.Ship.DeckStates.Any(ds => ds == DeckState.Undamaged)).Select(si=>si.Ship).ToList(),
+                RemainingShips = winner.CurrentMap.ShipInformationList.Where(si => si.Ship.DeckStates.Any(ds => ds == DeckState.Undamaged)).Count(),
                 GameTurnNumber = game.GameDetails.ShotList.Count,
                 WinnerName = winner.Name
             });

@@ -8,13 +8,14 @@ namespace Battleship2.Core.Models
     public class GameShot : Entity
     {
         public Coords TargetCoords { get; set; }
-        public Player Shooter { get; set; }
+        public int ShooterId { get; set; }
+        public string ShooterName { get; set; }
         public bool TargetHit { get; set; }
         public bool ShipIsDrown { get; set; }
 
         public override string ToString()
         {
-            string value = string.Format("Player {0} shooted at {1}, {2}.", Shooter.Name, TargetCoords.CoordX, TargetCoords.CoordY);
+            string value = string.Format("Player {0} shooted at {1}, {2}.", ShooterName, TargetCoords.CoordX, TargetCoords.CoordY);
             if(TargetHit)
             {
                 value += " Ship hit!";

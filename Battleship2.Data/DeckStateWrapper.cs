@@ -3,14 +3,14 @@ using System;
 
 namespace Battleship2.Data
 {
-    internal class DeckStateWrapper
-    {
-        internal Guid Id { get; set; }
-        internal DeckState InnerDeckState { get; set; }
+    //internal class DeckStateWrapper
+    //{
+    //    internal Guid Id { get; set; }
+    //    internal DeckState InnerDeckState { get; set; }
 
-        public DeckStateWrapper(DeckState ds)
-        {
-            InnerDeckState = ds;
-        }
-    }
+    //    public DeckStateWrapper(DeckState ds)
+    //    {
+    //        InnerDeckState = ds;
+    //    }
+    //}
 }

@@ -9,5 +9,11 @@ namespace BattleShip2.BusinessLogic.Models
     {
         public SortingType SortingType { get; set; }
         public SortingDirection SortingDirection {get; set;}
+
+        public SortingItem(SortingType type, SortingDirection direction)
+        {
+            SortingType = type;
+            SortingDirection = direction;
+        }
     }
 }

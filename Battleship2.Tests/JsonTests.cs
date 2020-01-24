@@ -18,7 +18,7 @@ namespace Battleship2.Tests
             FiltersWithSorting filtersWithSorting = new FiltersWithSorting()
             {
                 Filters = new List<IFilter> { new PlayerFilter("John"), new RemainingShipFilter(5) },
-                Sorting = new SortingItem() { SortingType = SortingType.DateSorting, SortingDirection = SortingDirection.Descending }
+                Sorting = new SortingItem(SortingType.DateSorting, SortingDirection.Descending),
             };
             FiltersWithSorting deserialize = default;
             try

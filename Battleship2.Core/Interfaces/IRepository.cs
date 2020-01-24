@@ -9,9 +9,9 @@ namespace Battleship2.Core.Interfaces
     public interface IRepository<TEntity> where TEntity : Entity
     {
         public void Create(TEntity item);
-        public TEntity Get(Guid id);
+        public TEntity Get(int id);
         public void Update(TEntity item);
-        public void Delete(Guid id);
+        public void Delete(int id);
         public IQueryable<TEntity> GetAll();
     }
 }

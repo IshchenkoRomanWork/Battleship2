@@ -106,22 +106,26 @@ namespace Battleship2.Tests
             var _firstdbContext = GetDatabaseContext();
             var efplrepo = new EFRepository<Player>(_firstdbContext);
             var player1 = new Player() { Name = "Ioann, the Terrible", CurrentMap = new Map() };
-            efplrepo.Create(player1);
+            efplrepo.Create(player1); //dwada
             var players = new List<Player>() { efplrepo.Get(player1.Id) };
             var _seconddbContext = GetDatabaseContext();
             var efgd2repo = new EFRepository<GameDetails>(_seconddbContext);
             GameDetails gameDetails = new GameDetails()
             {
-                Players = players,
+                PlayersData = new PlayersData()
+                {
+                    FirstPlayerId=default,
+                    SecondPlayerId=default,
+                    SecondPlayerName="aaaa",
+                    FirstPlayerName="bbb"
+                },
                 PlayerMaps = players.Select(p => p.CurrentMap).ToList(),
                 ShotList = new List<GameShot>()
             };
-            gameDetails.Players[0].Name = "Jean de Gray";
-            efgd2repo.Create(gameDetails);
+            efgd2repo.Create(gameDetails); //dawdawd
             var _thirddbContext = GetDatabaseContext();
             var efgd3repo = new EFRepository<GameDetails>(_thirddbContext);
-            gameDetails.Players[0].Name = "Alexander the Great";
-            efgd3repo.Update(gameDetails);
+            efgd3repo.Update(gameDetails); //dawdawd
             var testplayer = new EFRepository<Player>(GetDatabaseContext()).Get(player1.Id);
             Assert.IsTrue(testplayer.Name == "Alexander the Great");
         }

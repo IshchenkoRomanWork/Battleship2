@@ -7,16 +7,16 @@ using System.Text;
 
 namespace BattleShip2.BusinessLogic.Models.Filters
 {
-    public class RemainingShipFilter : IFilter
+    public class GameTurnFilter : IFilter
     {
-        public int MinimalRemaininShipNumber { get; set; }
+        public int MinimalGameTurns { get; set; }
         public void ApplyFilter(ref IQueryable<StatisticsItem> statistics)
         {
-            statistics = statistics.Where(si => si.RemainingShips > MinimalRemaininShipNumber);
+            statistics = statistics.Where(si => si.GameTurnNumber > MinimalGameTurns);
         }
-        public RemainingShipFilter(int ships)
+        public GameTurnFilter(int minimalGameTurns)
         {
-            MinimalRemaininShipNumber = ships;
+            MinimalGameTurns = minimalGameTurns;
         }
     }
 }

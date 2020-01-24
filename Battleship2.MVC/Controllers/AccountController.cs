@@ -74,7 +74,7 @@ namespace Battleship2.MVC.Controllers
             return View(model);
         }
 
-        private async Task Authenticate(string userName, Guid id)
+        private async Task Authenticate(string userName, int id)
         {
             var claims = new List<Claim>
             {

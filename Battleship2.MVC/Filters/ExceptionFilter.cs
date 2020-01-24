@@ -17,7 +17,7 @@ namespace Battleship2.MVC.Filters
 
         public override void OnException(ExceptionContext filterContext)
         {
-            _logger.Log(filterContext.Exception.Message);
+            _logger.Log(filterContext.Exception.Message + " / " + filterContext.Exception.InnerException + " / " + filterContext.Exception.StackTrace);
         }
     }
 }

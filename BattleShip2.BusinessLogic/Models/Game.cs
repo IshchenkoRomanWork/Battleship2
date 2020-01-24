@@ -9,17 +9,18 @@ namespace BattleShip2.BusinessLogic.Models
 {
     public class Game
     {
-        public Guid Id { get; private set; }
+        public int Id { get; private set; }
         public GameDetails GameDetails { get; set; }
         public Player ActivePlayer { get; set; }
         public List<bool> PlayersReady {get; set;}
 
         public Game()
         {
-            Id = Guid.NewGuid();
+            Id = new Random().Next();
             GameDetails = new GameDetails()
             {
-                ShotList = new List<GameShot>()
+                ShotList = new List<GameShot>(),
+                Players = new List<Player>(),
             };
             PlayersReady = new List<bool> { false, false };
         }
@@ -59,7 +60,8 @@ namespace BattleShip2.BusinessLogic.Models
             var shotsResult = map.ShotAtCoords(coords, out targetHit, out shipIsDrown);
             GameDetails.ShotList.Add(new GameShot
             {
-                Shooter = ActivePlayer,
+                ShooterName = ActivePlayer.Name,
+                ShooterId = ActivePlayer.Id,
                 TargetCoords = coords,
                 TargetHit = targetHit,
                 ShipIsDrown = shipIsDrown
@@ -82,6 +84,13 @@ namespace BattleShip2.BusinessLogic.Models
             if(playersWithNoRemainingShips.Count == 1)
             {
                 GameDetails.PlayerMaps = GameDetails.Players.Select(pl => pl.CurrentMap).ToList();
+                GameDetails.PlayersData = new PlayersData()
+                {
+                    FirstPlayerName = GameDetails.Players[0].Name,
+                    SecondPlayerName = GameDetails.Players[1].Name,
+                    FirstPlayerId = GameDetails.Players[0].Id,
+                    SecondPlayerId = GameDetails.Players[1].Id
+                };
                 return true;
             }
             return false;

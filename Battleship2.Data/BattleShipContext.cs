@@ -1,7 +1,7 @@
-﻿using Battleship2.Core.DataModels;
-using Battleship2.Core.Enums;
+﻿using Battleship2.Core.Enums;
 using Battleship2.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
@@ -21,61 +21,74 @@ namespace Battleship2.Data
         public DbSet<ShipLocation> ShipLocations { get; set; }
         public DbSet<StatisticsItem> Statistics  { get; set; }
         public DbSet<Coords> Coords { get; set; }
-        public DbSet<Coords> LogInfos { get; set; }
-        public DbSet<GameDetailsPlayer> GameDetailsPlayers { get; set; }
+        public DbSet<LogInfo> LogInfos { get; set; }
+        public DbSet<PlayersData> PlayersDatas { get; set; }
         public BattleShipContext(DbContextOptions<BattleShipContext> options)
         : base(options)
         {
-            
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
         }
         protected override void OnModelCreating(ModelBuilder builder)
-        { 
-            builder.Entity<Ship>().HasKey(s => s.Id);
-            builder.Entity<Ship>().Property(s => s.DeckStates)
-                                  .HasConversion(dsList => dsList.Select(ds => new DeckStateWrapper(ds)),
-                                                 dswList => dswList.Select(dsw => dsw.InnerDeckState).ToList());
+        {
+            //builder.Entity<Ship>().Property(e => e.Id).HasDefaultValueSql("newid()");
+            //builder.Entity<GameShot>().Property(e => e.Id).HasDefaultValueSql("newid()");
+            //builder.Entity<GameDetails>().Property(e => e.Id).HasDefaultValueSql("newid()");
+            //builder.Entity<Player>().Property(e => e.Id).HasDefaultValueSql("newid()");
+            //builder.Entity<Map>().Property(e => e.Id).HasDefaultValueSql("newid()");
+            //builder.Entity<ShipInformation>().Property(e => e.Id).HasDefaultValueSql("newid()");
+            //builder.Entity<ShipLocation>().Property(e => e.Id).HasDefaultValueSql("newid()");
+            //builder.Entity<PlayersData>().Property(e => e.Id).HasDefaultValueSql("newid()");
+
+            builder.Entity<Ship>().HasKey(e => e.Id);
+            builder.Entity<GameShot>().HasKey(e => e.Id);
+            builder.Entity<GameDetails>().HasKey(e => e.Id);
+            builder.Entity<Player>().HasKey(e => e.Id);
+            builder.Entity<Map>().HasKey(e => e.Id);
+            builder.Entity<ShipInformation>().HasKey(e => e.Id);
+            builder.Entity<ShipLocation>().HasKey(e => e.Id);
+            builder.Entity<StatisticsItem>().HasKey(e => e.Id);
+            builder.Entity<Coords>().HasKey(e => e.Id);
+            builder.Entity<LogInfo>().HasKey(e => e.Id);
+            builder.Entity<PlayersData>().HasKey(e => e.Id);
+
+
             builder.Entity<Ship>().Ignore(s => s.DeckStates);
 
-            builder.Entity<GameShot>().HasKey(gs => gs.Id);
             builder.Entity<GameShot>().HasOne(gs => gs.TargetCoords);
-            builder.Entity<GameShot>().HasOne(gs => gs.Shooter);
 
-            builder.Entity<Coords>().HasKey(s => s.Id);
-
-            builder.Entity<GameDetails>().HasKey(gd => gd.Id);
             builder.Entity<GameDetails>().HasMany(gd => gd.PlayerMaps).WithOne();
             builder.Entity<GameDetails>().HasMany(gd => gd.ShotList).WithOne();
+            builder.Entity<GameDetails>().HasOne(gd => gd.PlayersData);
+            builder.Entity<GameDetails>().Ignore(gd => gd.Players);
 
-            builder.Entity<GameDetailsPlayer>().HasKey(gdp => gdp.Id);
-            builder.Entity<GameDetailsPlayer>()
-                .HasOne(gdp => gdp.Player)
-                .WithMany(p => p.PlayerRelationList)
-                .HasForeignKey(gdp => gdp.PlayerId);
-
-            builder.Entity<GameDetailsPlayer>()
-                .HasOne(gdp => gdp.GameDetails)
-                .WithMany(gd => gd.PlayerRelationList)
-                .HasForeignKey(gdp => gdp.GameDetailsId);
-
-            builder.Entity<Player>().HasKey(p => p.Id);
             builder.Entity<Player>().Ignore(p => p.CurrentMap);
 
-            builder.Entity<Map>().HasKey(m => m.Id);
             builder.Entity<Map>().HasMany(m => m.ShipInformationList).WithOne();
             builder.Entity<Map>().HasMany(m => m.ShotCoords).WithOne();
 
-            builder.Entity<ShipInformation>().HasKey(si => si.Id);
             builder.Entity<ShipInformation>().HasOne(si => si.Ship);
             builder.Entity<ShipInformation>().HasOne(si => si.Location);
 
-            builder.Entity<ShipLocation>().HasKey(sl => sl.Id);
             builder.Entity<ShipLocation>().HasOne(sl => sl.Coords);
 
-            builder.Entity<StatisticsItem>().HasKey(si => si.Id);
-
-            builder.Entity<LogInfo>().HasKey(li => li.Id);
 
             base.OnModelCreating(builder);
         }
+
+        //public override EntityEntry Attach(object entity)
+        //{
+        //    var originEntity = Find(entity.GetType(), (entity as Entity).Id);
+        //    if (originEntity != null)
+        //    {
+        //        Remove(originEntity);
+        //        SaveChanges();
+        //    }
+        //    return base.Attach(entity);
+        //}
     }
 }

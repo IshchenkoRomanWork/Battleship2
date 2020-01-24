@@ -47,7 +47,7 @@ namespace BattleShip2.BusinessLogic.Services
                 ? statistics.OrderBy(si => si.GameDate)
                 : statistics.OrderByDescending(si => si.GameDate),
                 SortingType.RemainingShipsSorting => directionAscending 
-                ? statistics.OrderBy(si => si.RemainingShips.Count) 
+                ? statistics.OrderBy(si => si.RemainingShips) 
                 : statistics.OrderByDescending(si => si.GameDate),
             };
         }
@@ -55,11 +55,10 @@ namespace BattleShip2.BusinessLogic.Services
         {
             var all = _gameDetails.GetAll().ToList();
             return all.
-                Where(gd => gd.Players.
-                Any(pl => pl.Id == player.Id)).
+                Where(gd => gd.PlayersData.FirstPlayerId == player.Id || gd.PlayersData.SecondPlayerId == player.Id).
                 ToList();
         }
-        public GameDetails GetGameDetails(Guid gameDetailsId)
+        public GameDetails GetGameDetails(int gameDetailsId)
         {
             return _gameDetails.Get(gameDetailsId);
         }
@@ -75,7 +74,7 @@ namespace BattleShip2.BusinessLogic.Services
         {
             _players.Create(player);
         }
-        public Player GetPlayer(Guid Id)
+        public Player GetPlayer(int Id)
         {
             return _players.Get(Id);
         }
