@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Battleship2.MVC
+namespace TestAddReact
 {
     public class Program
     {
@@ -19,17 +18,9 @@ namespace Battleship2.MVC
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.AddConsole();
-                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder
-                       .UseContentRoot(Directory.GetCurrentDirectory())
-                       .UseIISIntegration()
-                       .UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }

@@ -14,7 +14,7 @@ using System.Text;
 
 namespace Battleship2.Tests
 {
-    class BattleTests
+    class LogicTests
     {
         ActiveGames ActiveGames { get; set; }
         BattleShipHub Hub { get; set; }

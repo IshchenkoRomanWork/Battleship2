@@ -25,6 +25,13 @@ namespace Battleship2.MVC.Controllers
             ViewBag.PlayerId = player.Id.ToString();
             return View(new GameViewModel() { GameId = gameid });
         }
+        public IActionResult GameReact(string gameid, bool isCreated)
+        {
+            var player = _helper.GetPlayerFromRequest(HttpContext.Request);
+            ViewBag.IsCreated = isCreated;
+            ViewBag.PlayerId = player.Id.ToString();
+            return View(new GameViewModel() { GameId = gameid });
+        }
         public IActionResult Win()
         {
             return RedirectToAction("Index", "Home");

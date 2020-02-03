@@ -19,6 +19,12 @@ using BattleShip2.BusinessLogic.Intefaces;
 using Battleship2.MVC.Hubs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
+using React.AspNet;
+using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
+using JavaScriptEngineSwitcher.ChakraCore;
+using React;
+using JavaScriptEngineSwitcher.Core;
+using JavaScriptEngineSwitcher.V8;
 
 namespace Battleship2.MVC
 {
@@ -44,6 +50,11 @@ namespace Battleship2.MVC
                 options.AutomaticAuthentication = false;
             });
 
+            //loggerFactory.MinimumLevel = LogLevel.Debug;
+            //loggerFactory.AddDebug(LogLevel.Debug);
+            //var logger = loggerFactory.CreateLogger("Startup");
+            //logger.LogWarning("Logger configured!");
+
 
             //services.AddDbContext<BattleshipIdentityContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipIdentityDb"));
             //services.AddDbContext<BattleShipContext>(options => options.UseInMemoryDatabase(databaseName: "battleShipDb"));
@@ -56,7 +67,17 @@ namespace Battleship2.MVC
 
             services.AddSingleton<ActiveGames>();
 
-            services.AddSignalR();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddReact();
+
+            // Make sure a JS engine is registered, or you will get an error!
+            services.AddJsEngineSwitcher(options => options.DefaultEngineName = ChakraCoreJsEngine.EngineName)
+              .AddChakraCore();
+
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -82,7 +103,31 @@ namespace Battleship2.MVC
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //JsEngineSwitcher.Current.DefaultEngineName = V8JsEngine.EngineName;
+            //JsEngineSwitcher.Current.EngineFactories.AddV8();
             app.UseHttpsRedirection();
+            app.UseReact(config => {
+                //If you want to use server-side rendering of React components,
+                //add all the necessary JavaScript files here. This includes
+                //your components as well as all of their dependencies.
+                //See http://reactjs.net/ for more information. Example:
+
+                // If you use an external build too (for example, Babel, Webpack,
+                // Browserify or Gulp), you can improve performance by disabling
+                // ReactJS.NET's version of Babel and loading the pre-transpiled
+                // scripts. Example:
+                //config
+                //  .SetLoadBabel(false)
+                //  .AddScriptWithoutTransform("~/js/bundle.server.js");
+
+                config
+                    //.SetLoadBabel(true)
+                    //.SetLoadReact(true)
+                    //.AddScript("~/js/dist/reactgamehub.jsx")
+                    //.AddScript("~/js/dist/testReactSignalR.jsx")
+                    .SetUseDebugReact(true);
+            });
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -90,12 +135,10 @@ namespace Battleship2.MVC
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //var oprions = RewriteOptions()
-            //.AddRedirect("(.*)/api(.*)", Configuration)
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<BattleShipHub>("/gamehub");
+                endpoints.MapHub<TestHub>("/testhub");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -103,16 +146,6 @@ namespace Battleship2.MVC
                     name: "ApiRoutes",
                     pattern: "api/{controller=Home}/{action=Index}/{id?}");
             });
-            //Proxy
-            //app.Use((context, next) =>
-            //{
-            //    if (context.Request.Path.StartsWithSegments("/api"))
-            //    {
-            //        context.Request.Host = new HostString(Configuration["apiLocation"]);
-            //        context.Request.
-            //    }
-            //    return next();
-            //});
 
         }
     }

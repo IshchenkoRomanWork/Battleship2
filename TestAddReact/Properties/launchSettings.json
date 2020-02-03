@@ -1,14 +1,10 @@
-{
+﻿{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "http://localhost/Battleship2.MVC",
-      "sslPort": 0
-    },
     "iisExpress": {
-      "applicationUrl": "http://localhost:63140",
-      "sslPort": 44359
+      "applicationUrl": "http://localhost:53737",
+      "sslPort": 44321
     }
   },
   "profiles": {
@@ -19,19 +15,12 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Battleship2.MVC": {
+    "TestAddReact": {
       "commandName": "Project",
       "launchBrowser": true,
+      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:5000"
-    },
-    "IIS": {
-      "commandName": "IIS",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT ": "Development"
       }
     }
   }

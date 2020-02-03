@@ -3,6 +3,9 @@ using Battleship2.Core.Models;
 using BattleShip2.BusinessLogic.Models;
 using BattleShip2.BusinessLogic.Services;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -15,11 +18,13 @@ namespace Battleship2.MVC.Hubs
     {
         private UnitOfWork _unitOfWork { get; set; }
         private ActiveGames _activeGames { get; set; }
+        private ILogger _logger { get; set; }
         private static ConcurrentDictionary<string, string> _connectionAndPlayerIds = new ConcurrentDictionary<string, string>();
-        public BattleShipHub(UnitOfWork unitOfWork, ActiveGames activeGames)
+        public BattleShipHub(UnitOfWork unitOfWork, ActiveGames activeGames, ILogger<BattleShipHub> logger)
         {
-            _unitOfWork = unitOfWork;
             _activeGames = activeGames;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
         }
         public void PlayerConnected(string playerId, string gameId)
         {
@@ -31,6 +36,7 @@ namespace Battleship2.MVC.Hubs
 
             _connectionAndPlayerIds.AddOrUpdate(playerId, connectionId, (key, oldvalue) => Context.ConnectionId);
             Clients.Client(connectionId).SendAsync("OpponentConnected", opponent.Name);
+            Clients.Client(connectionId).SendAsync("SetId", gameId);
             Clients.Client(_connectionAndPlayerIds.GetOrAdd(opponent.Id.ToString(), (key) => throw new Exception("ConnectionId non existent")))
                 .SendAsync("OpponentConnected", player.Name);
         }
@@ -50,7 +56,7 @@ namespace Battleship2.MVC.Hubs
             int tailX = sendData[2].GetInt32();
             int tailY = sendData[3].GetInt32();
             int length = sendData[4].GetInt32();
-            int playerId = Int32.Parse(sendData[5].GetString());
+            int playerId = Int32.Parse(_connectionAndPlayerIds.First((kvp) => kvp.Value == Context.ConnectionId).Key);
 
             Game game = _activeGames.GetGameByPlayerId(playerId);
             Player player = _activeGames.GetPlayerById(playerId);
@@ -80,14 +86,18 @@ namespace Battleship2.MVC.Hubs
             if (addedsuccessfull)
             {
                 var jsonCoordList = JsonConvert.SerializeObject(shipInfo.GetCoordsFromShipInformation());
+                _logger.LogInformation("AddFinished");
                 Clients.Client(connectionId).SendAsync("AddShip", jsonCoordList, length);
             }
         }
-        public void Ready(string playerId)
+        public void Ready()
         {
-            var player = _activeGames.GetPlayerById(Int32.Parse(playerId));
-            var game = _activeGames.GetGameByPlayerId(Int32.Parse(playerId));
+            _logger.LogInformation("ReadyEntered");
+            int playerId = Int32.Parse(_connectionAndPlayerIds.First((kvp) => kvp.Value == Context.ConnectionId).Key);
+            var player = _activeGames.GetPlayerById(playerId);
+            var game = _activeGames.GetGameByPlayerId(playerId);
             game.PlayerIsReady(player);
+            _logger.LogInformation("AllPlayersCheckReached");
             if (game.PlayersReady.All(r => r))
             {
                 foreach (var pl in game.GameDetails.Players)
@@ -98,13 +108,15 @@ namespace Battleship2.MVC.Hubs
                 game.GameStart();
                 var firstPlayer = game.ActivePlayer;
                 var firstPlayerConnectionId = _connectionAndPlayerIds.GetOrAdd(firstPlayer.Id.ToString(), (key) => throw new Exception("ConnectionId non existent"));
+                _logger.LogInformation("ReadyFinished");
                 Clients.Client(firstPlayerConnectionId).SendAsync("YourTurn");
             }
         }
-        public void PlayerLeft(string playerId)
+        public void PlayerLeft()
         {
-            var player = _activeGames.GetPlayerById(Int32.Parse(playerId));
-            var game = _activeGames.GetGameByPlayerId(Int32.Parse(playerId));
+            int playerId = Int32.Parse(_connectionAndPlayerIds.First((kvp) => kvp.Value == Context.ConnectionId).Key);
+            var player = _activeGames.GetPlayerById(playerId);
+            var game = _activeGames.GetGameByPlayerId(playerId);
             if (game != null)
             {
                 game.GameDetails.Players.RemoveAll(p => p.Id == player.Id);
@@ -126,9 +138,9 @@ namespace Battleship2.MVC.Hubs
         {
             int headX = sendData[0].GetInt32();
             int headY = sendData[1].GetInt32();
-            string playerId = sendData[2].GetString();
-            var player = _activeGames.GetPlayerById(Int32.Parse(playerId));
-            var game = _activeGames.GetGameByPlayerId(Int32.Parse(playerId));
+            int playerId = Int32.Parse(_connectionAndPlayerIds.First((kvp) => kvp.Value == Context.ConnectionId).Key);
+            var player = _activeGames.GetPlayerById(playerId);
+            var game = _activeGames.GetGameByPlayerId(playerId);
             var opponent = game.GameDetails.Players.SingleOrDefault(p => p.Id != player.Id);
             var shotResult = game.ShotAt(opponent, new Coords(headX, headY));
             var shotInfo = game.GameDetails.ShotList.Last();
@@ -147,7 +159,7 @@ namespace Battleship2.MVC.Hubs
                 Win(game, playerConnectionId, opponentConnectionId, player);
             }
         }
-        public void Win(Game game, string winnerConnectionId, string loserConnectionId, Player winner)
+        private void Win(Game game, string winnerConnectionId, string loserConnectionId, Player winner)
         {
             _unitOfWork.AddGameDetails(game.GameDetails);
             _unitOfWork.AddStatistics(new StatisticsItem()

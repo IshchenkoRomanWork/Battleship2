@@ -2,18 +2,22 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Index", "Statistics")';">Game Statistics</button>
-    @if (User.Identity.IsAuthenticated)
-    {
-        <button type="button" class="btn btn-primary btn-lg" id="createButton">Start Game</button>
-        <button type="button" class="btn btn-primary btn-lg" id="connectButton">Connect to Game</button>
+    <div class="text-center">
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Index", "Statistics")';">Game Statistics</button>
+        @if (User.Identity.IsAuthenticated)
+        {
+            @*<button type="button" class="btn btn-primary btn-lg" id="createButton">Start Game</button>
+            <button type="button" class="btn btn-primary btn-lg" id="connectButton">Connect to Game</button>*@
+            <button type="button" class="btn btn-primary btn-lg" id="reactCreateButton">Start React Game</button>
+            <button type="button" class="btn btn-primary btn-lg" id="reactConnectButton">Connect to React Game</button>
+        }
 
-    }
-
-    <script>
+        <script>
         $(document).ready(function ()
         {
+                        $('#createButton').on('click', function () {
+                window.location.href = '@Html.Raw(@Url.Action("Game", "Game", new { @gameId = "", @isCreated = true }))'
+            })
             $('#connectButton').on('click', function () {
                 var gameid = window.prompt("Please, enter game's id");
                 if (gameid != "" && gameid != null) {
@@ -22,9 +26,17 @@
                     window.location.href = urlstring;
                 }
             })
-            $('#createButton').on('click', function () {
-                window.location.href = '@Html.Raw(@Url.Action("Game", "Game", new { @gameId = "", @isCreated = true }))'
+            $('#reactCreateButton').on('click', function () {
+                window.location.href = '@Html.Raw(@Url.Action("GameReact", "Game", new { @gameId = "", @isCreated = true }))'
+            })
+            $('#reactConnectButton').on('click', function () {
+                var gameid = window.prompt("Please, enter game's id");
+                if (gameid != "" && gameid != null) {
+                    var urlstring = "@Html.Raw(@Url.Action("GameReact", "Game", new { @gameId = "gameid_placeholder", @isCreated = false }))";
+                    urlstring = urlstring.replace("gameid_placeholder", gameid);
+                    window.location.href = urlstring;
+                }
             })
 });
-    </script>
-</div>
+        </script>
+    </div>

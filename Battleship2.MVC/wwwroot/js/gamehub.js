@@ -7,26 +7,22 @@ let youareactiveplayer = new Boolean(false);
 const hubConnection = new signalR.HubConnectionBuilder()
     .withUrl("/gamehub")
     .build();
-$("td[name=shipcell]").hover(
-    function () {
+$("td[name=shipcell]").hover(function () {
         $(this).attr("data-removed-class", $(this).attr('class'));
         var classList = $(this).attr('class').split(/\s+/);
         $.each(classList, function (index, item) {
             $(this).removeClass(item);
         });
         $(this).addClass('shipover')
-    },
-    function () {
+    },function () {
         $(this).removeClass('shipover')
         var classList = $(this).attr('data-removed-class').split(/\s+/);
         $.each(classList, function (index, item) {
             $(this).addClass(item);
         });
         $(this).attr("data-removed-class", "");
-    }
-);
-$("td[name=shipcell]").on("click",
-    function () {
+    });
+$("td[name=shipcell]").on("click", function () {
         if (shipAdditionLocked == false)
         {
             if (shipshead == null && $(this).hasClass('ship') == false)
@@ -70,8 +66,7 @@ $("td[name=shipcell]").on("click",
                 }
             }
         }
-    }
-);
+    });
 $('#readybutton').on("click", function () {
     var noshipsremained = new Boolean(true);
     availships.forEach(availshipsoftype => {
@@ -166,7 +161,6 @@ hubConnection.on("OpponentLeft", function ()
     alert("Your opponent left")
     $('#opponentsname').text("Your opponent's Name");
 });
-
 hubConnection.start().then(function () {
     if (jsGameIsCreated == 'True') {
         hubConnection.invoke('GameCreated', jsPlayerId);
