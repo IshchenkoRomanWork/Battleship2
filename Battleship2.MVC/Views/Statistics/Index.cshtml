@@ -1,5 +1,4 @@
-﻿@model IEnumerable<Battleship2.Core.Models.StatisticsItem>
-
+﻿
     @{
     ViewData["Title"] = "Statistics";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -27,17 +26,21 @@
                         <input type="text" name="turnsfilterinput" />
                     </form>
                 </th>
-                <th>
-                    <label name="shipsortheader">Remainin winner ships</label>
-                    <form name="shipsfilterform">
-                        <input type="text" name="shipsfilterinput" />
-                    </form>
+                <th >
+                    <div class="sortheader" id="shipsortheader">
+                        <label>Remainin winner ships</label>
+                        <form name="shipsfilterform">
+                            <input type="text" name="shipsfilterinput" />
+                        </form>
+                    </div>
                 </th>
-                <th>
-                    <label name="datesortheader">Game Date</label>
-                    <form name="datefilterform">
-                        <input type="text" name="datefilterinput" />
-                    </form>
+                <th >
+                    <div class="sortheader" id="datesortheader">
+                        <label>Game Date</label>
+                        <form name="datefilterform">
+                            <input type="text" name="datefilterinput" />
+                        </form>
+                    </div>
                 </th>
                 <th></th>
             </tr>

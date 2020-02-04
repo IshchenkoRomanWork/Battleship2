@@ -1,21 +1,7 @@
 ﻿let currentSorting = "desc/date";
 
-$("th[name=shipsortheader]").on("click", function () {
-    if (currentSorting == "desc/ship") {
-        currentSorting = "asc/ship"
-    }
-    else {
-        currentSorting == "desc/ship"
-    }
-});
-$("th[name=datesortheader]").on("click", function () {
-    if (currentSorting == "desc/date") {
-        currentSorting = "asc/date"
-    }
-    else {
-        currentSorting == "desc/date"
-    }
-});
+
+
 
 function GetData() {
     var jsonArray = {
@@ -62,6 +48,22 @@ function row(stItem) {
 }
 
 $(document).ready(() => {
+    $('#shipsortheader').on("click", function () {
+        if (currentSorting == "desc/ship") {
+            currentSorting = "asc/ship"
+        }
+        else {
+            currentSorting == "desc/ship"
+        }
+    });
+    $('#datesortheader').on("click", function () {
+        if (currentSorting == "desc/date") {
+            currentSorting = "asc/date"
+        }
+        else {
+            currentSorting == "desc/date"
+        }
+    });
     $(function () {
         $('input[name="datefilterinput"]').daterangepicker();
         var today = new Date();

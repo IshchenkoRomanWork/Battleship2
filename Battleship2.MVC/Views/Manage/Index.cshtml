@@ -18,5 +18,6 @@
             </dd>
         </dl>
         <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Html.Raw(@Url.Action("Index", "GameDetails", new { @Id = Model.Id }))';">Your Games</button>
-        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Html.Raw(@Url.Action("Index", "Statistics", new { @Id = Model.Id }))';">Your Statistics</button>
+        @*<button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Html.Raw(@Url.Action("Index", "Statistics", new { @Id = Model.Id }))';">Your Statistics</button>*@
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Html.Raw(@Url.Action("ReactStatistics", "Statistics", new { @Id = Model.Id }))';">Your React Statistics</button>
     </div>

@@ -6,15 +6,9 @@
 }
 <div id="content"></div>
 
-<script type="text/js">
-    <div data-marker='@Model.GameId'></div>
-         var razorGameIsCreated='@ViewBag.IsCreated' ;
-         var razorPlayerId='@ViewBag.PlayerId' ;
-</script>
 <div data-marker='@Model.GameId' id="gameId"></div>
 <div data-marker='@ViewBag.IsCreated' id="isCreated"></div>
 <div data-marker='@ViewBag.PlayerId' id="playerId"></div>
-
 
 <script src="@Url.Content("~/js/dist/reactgamehub.jsx")"></script>
 

@@ -129,7 +129,14 @@ table{
     height: 400px;
 }
 
-#shotlist {  
+.sortheader {
+    width: 200px;
+    height: 100px;
+    border: 1px solid black;
+    float: left;
+}
+
+#shotlist {
     overflow: scroll;
     vertical-align: top;
 }

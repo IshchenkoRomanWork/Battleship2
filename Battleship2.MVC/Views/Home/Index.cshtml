@@ -3,7 +3,8 @@
 }
 
     <div class="text-center">
-        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Index", "Statistics")';">Game Statistics</button>
+        @*<button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Index", "Statistics")';">Game Statistics</button>*@
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("ReactStatistics", "Statistics")';">Game React Statistics</button>
         @if (User.Identity.IsAuthenticated)
         {
             @*<button type="button" class="btn btn-primary btn-lg" id="createButton">Start Game</button>
@@ -15,7 +16,7 @@
         <script>
         $(document).ready(function ()
         {
-                        $('#createButton').on('click', function () {
+            $('#createButton').on('click', function () {
                 window.location.href = '@Html.Raw(@Url.Action("Game", "Game", new { @gameId = "", @isCreated = true }))'
             })
             $('#connectButton').on('click', function () {

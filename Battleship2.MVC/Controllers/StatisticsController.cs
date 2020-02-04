@@ -26,5 +26,17 @@ namespace Battleship2.MVC.Controllers
             }
             return View();
         }
+        public IActionResult ReactStatistics(int id)
+        {
+            if (id != default)
+            {
+                ViewBag.PlayerName = _unitOfWork.GetPlayer(id).Name;
+            }
+            else
+            {
+                ViewBag.PlayerName = "";
+            }
+            return View();
+        }
     }
 }
