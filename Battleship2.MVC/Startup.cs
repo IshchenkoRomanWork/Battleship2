@@ -25,6 +25,7 @@ using JavaScriptEngineSwitcher.ChakraCore;
 using React;
 using JavaScriptEngineSwitcher.Core;
 using JavaScriptEngineSwitcher.V8;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace Battleship2.MVC
 {
@@ -88,6 +89,10 @@ namespace Battleship2.MVC
             {
                 options.Filters.Add(typeof(ExceptionFilter));
             });
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,6 +107,7 @@ namespace Battleship2.MVC
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+                app.UseSpaStaticFiles();
             }
 
             //JsEngineSwitcher.Current.DefaultEngineName = V8JsEngine.EngineName;
@@ -145,6 +151,18 @@ namespace Battleship2.MVC
                 endpoints.MapControllerRoute(
                     name: "ApiRoutes",
                     pattern: "api/{controller=Home}/{action=Index}/{id?}");
+            });
+            app.UseSpa(spa =>
+            {
+                // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                // see https://go.microsoft.com/fwlink/?linkid=864501
+
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
             });
 
         }
