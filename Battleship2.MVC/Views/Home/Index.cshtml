@@ -11,6 +11,8 @@
             <button type="button" class="btn btn-primary btn-lg" id="connectButton">Connect to Game</button>*@
             <button type="button" class="btn btn-primary btn-lg" id="reactCreateButton">Start React Game</button>
             <button type="button" class="btn btn-primary btn-lg" id="reactConnectButton">Connect to React Game</button>
+            <button type="button" class="btn btn-primary btn-lg" id="angularCreateButton">Start Angular Game</button>
+            <button type="button" class="btn btn-primary btn-lg" id="angularConnectButton">Connect to Angular Game</button>
         }
 
         <script>
@@ -34,6 +36,17 @@
                 var gameid = window.prompt("Please, enter game's id");
                 if (gameid != "" && gameid != null) {
                     var urlstring = "@Html.Raw(@Url.Action("GameReact", "Game", new { @gameId = "gameid_placeholder", @isCreated = false }))";
+                    urlstring = urlstring.replace("gameid_placeholder", gameid);
+                    window.location.href = urlstring;
+                }
+            })
+                $('#angularCreateButton').on('click', function () {
+                window.location.href = '@Html.Raw(@Url.Action("GameAngular", "Game", new { @gameId = "" }))'
+            })
+            $('#angularConnectButton').on('click', function () {
+                var gameid = window.prompt("Please, enter game's id");
+                if (gameid != "" && gameid != null) {
+                    var urlstring = "@Html.Raw(@Url.Action("GameAngular", "Game", new { @gameId = "gameid_placeholder" }))";
                     urlstring = urlstring.replace("gameid_placeholder", gameid);
                     window.location.href = urlstring;
                 }

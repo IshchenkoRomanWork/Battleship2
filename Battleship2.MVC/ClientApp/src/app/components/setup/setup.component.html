@@ -1,0 +1,15 @@
+<div id="setup">
+  <h3>Your Unadded Ships</h3>
+  <table id="availableships">
+    <tr> 
+      <td *ngFor="let shipLength of unaddedShipList" [class]="shipexamplecell">
+        <div [class]="shipexample">
+          <div *ngFor="let cell of (shipLength | array)" [ngClass]="['cell', 'ship']"></div>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <div class="border-top">
+      <button type="button" class="btn btn-primary btn-lg" id="readybutton">Ready</button>
+  </div>
+</div>

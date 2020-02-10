@@ -1,0 +1,30 @@
+/* table{
+    border: 3px solid black;
+    margin: 3px;
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    border: 5px solid black;
+}
+
+.ship {
+    background-color: blue;
+}
+
+.noship {
+    background-color: white
+}
+.damaged {
+    width: 80%;
+    height: 80%;
+    background-color: brown
+}
+.cellover {
+    background-color: yellow
+}
+
+.hidden {
+    background-color: lightgray
+} */

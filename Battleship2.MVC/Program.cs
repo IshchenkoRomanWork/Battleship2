@@ -14,6 +14,7 @@ namespace Battleship2.MVC
     {
         public static void Main(string[] args)
         {
+
             CreateHostBuilder(args).Build().Run();
         }
 

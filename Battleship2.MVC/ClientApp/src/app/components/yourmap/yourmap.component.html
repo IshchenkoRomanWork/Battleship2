@@ -1,0 +1,15 @@
+<h3>Your map</h3>
+<table >
+      <tr *ngFor="let row of map;index as coordYReversed">
+              <td *ngFor="let cell of row;index as coordX" (click)="addCell(coordX+1, 10-coordYReversed)" (mouseover)="cell.hover=true" (mouseleave)="cell.hover=false" [ngClass]="{
+                'cell': true,
+                'ship': cell.ship,
+                'noship': !cell.ship,
+                'cellover': cell.hover
+              }"
+               >
+                <div *ngIf="cell.damaged" ></div>
+              </td>
+      </tr>
+</table>
+<button type="button" className="btn btn-primary btn-lg" (click)="fastShips()">Fast Ships</button>

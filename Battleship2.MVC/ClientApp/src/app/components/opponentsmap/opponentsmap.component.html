@@ -1,0 +1,13 @@
+<h3>Your opponent's map</h3>
+<table>
+  <tr *ngFor="let row of map;index as coordYReversed">
+          <td *ngFor="let cell of row;index as coordX" (click)="shotCell(coordX+1, 10-coordYReversed)" [ngClass]="{
+            'cell': true,
+            'ship': cell.ship,
+            'noship': !cell.ship,
+            'hidden': cell.hidden
+          }" >
+            <div *ngIf="cell.damaged" ></div>
+          </td>
+  </tr>
+</table>

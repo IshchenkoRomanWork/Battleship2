@@ -1,0 +1,17 @@
+<h3 >Your opponent's Name: {{opponentsName}}</h3>
+<h3 >Your game's Id: {{gameId}}</h3>
+<h3 >Testing Your player's Id: {{playerId}}</h3>
+<table cellpadding="10">
+  <tr>
+      <td [class]="maptable">
+        <app-yourmap  ></app-yourmap >
+      </td>
+      <td [class]="maptable">
+        <app-opponentsmap></app-opponentsmap>
+      </td>
+      <td [class]="shotlist">
+        <app-gameactions></app-gameactions>
+      </td>
+  </tr>
+</table>
+<app-setup></app-setup>

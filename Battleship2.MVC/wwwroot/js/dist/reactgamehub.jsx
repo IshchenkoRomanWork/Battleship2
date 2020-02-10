@@ -59,9 +59,9 @@ class Game extends React.Component {
         });
         this.state =
         {
-            gameId: this.contextGameId,
-            playerId: this.contextPlayerId,
-            isGameCreated: this.contextIsGameCreated,
+            gameId: razorGameId,
+            playerId: razorPlayerId,
+            isGameCreated: razorGameIsCreated,
             unaddedShips: [[1, 4], [2, 3], [3, 2], [4, 1]],
             opponentsName: "",
             showsetup: true,

@@ -26,6 +26,7 @@ using React;
 using JavaScriptEngineSwitcher.Core;
 using JavaScriptEngineSwitcher.V8;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.AspNetCore.SpaServices.Webpack;
 
 namespace Battleship2.MVC
 {
@@ -75,17 +76,26 @@ namespace Battleship2.MVC
             services.AddJsEngineSwitcher(options => options.DefaultEngineName = ChakraCoreJsEngine.EngineName)
               .AddChakraCore();
 
-            services.AddSignalR(options =>
-            {
-                options.EnableDetailedErrors = true;
-            });
+            services.AddSignalR(
+            //    options =>
+            //{
+            //    options.EnableDetailedErrors = true;
+            //}
+            );
+            //.AddMessagePackProtocol(options =>
+            //{
+            //    options.FormatterResolvers = new List<MessagePack.IFormatterResolver>()
+            //{
+            //    MessagePack.Resolvers.StandardResolver.Instance,
+            //};
+            //});
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
-            services.AddControllersWithViews(options => 
+            services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(typeof(ExceptionFilter));
             });
@@ -105,15 +115,18 @@ namespace Battleship2.MVC
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                var options = new StaticFileOptions();
+                options.RequestPath = new PathString("/ClientApp/dist");
+                app.UseSpaStaticFiles(options);
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-                app.UseSpaStaticFiles();
             }
 
             //JsEngineSwitcher.Current.DefaultEngineName = V8JsEngine.EngineName;
             //JsEngineSwitcher.Current.EngineFactories.AddV8();
             app.UseHttpsRedirection();
-            app.UseReact(config => {
+            app.UseReact(config =>
+            {
                 //If you want to use server-side rendering of React components,
                 //add all the necessary JavaScript files here. This includes
                 //your components as well as all of their dependencies.
@@ -136,6 +149,7 @@ namespace Battleship2.MVC
             });
             app.UseStaticFiles();
 
+
             app.UseRouting();
 
             app.UseAuthentication();
@@ -152,19 +166,14 @@ namespace Battleship2.MVC
                     name: "ApiRoutes",
                     pattern: "api/{controller=Home}/{action=Index}/{id?}");
             });
+
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
                 // see https://go.microsoft.com/fwlink/?linkid=864501
-
                 spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
+                spa.UseAngularCliServer(npmScript: "start "); //--app=angular --base-href=/angular/ --serve-path=/
             });
-
         }
     }
 }
