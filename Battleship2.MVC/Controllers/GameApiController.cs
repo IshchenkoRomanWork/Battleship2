@@ -25,5 +25,10 @@ namespace Battleship2.MVC.Controllers
             Player player =_helper.GetPlayerFromRequest(HttpContext.Request);
             return player.Id.ToString();
         }
+        [HttpGet("islogged", Name = "IsLoggedIn")]
+        public bool IsLogged()
+        {
+            return HttpContext.User.Identity.IsAuthenticated;
+        }
     }
 }

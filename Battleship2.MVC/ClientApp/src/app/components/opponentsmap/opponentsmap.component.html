@@ -7,7 +7,7 @@
             'noship': !cell.ship,
             'hidden': cell.hidden
           }" >
-            <div *ngIf="cell.damaged" ></div>
+            <div *ngIf="cell.damaged" [class]="'damaged'" ></div>
           </td>
   </tr>
 </table>

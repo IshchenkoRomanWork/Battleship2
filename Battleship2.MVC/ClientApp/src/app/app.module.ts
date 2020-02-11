@@ -13,6 +13,7 @@ import { GameactionsComponent } from './components/gameactions/gameactions.compo
 import { GameboardComponent } from './components/gameboard/gameboard.component';
 import { SetupComponent } from './components/setup/setup.component';
 import { ArrayPipe } from './array.pipe';
+import { AuthGuard } from './gameboard.auth.guard';
 
 @NgModule({
    declarations: [
@@ -29,12 +30,13 @@ import { ArrayPipe } from './array.pipe';
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: 'gameangular', component: GameboardComponent},
+      { path: 'gameangular', component: GameboardComponent, canActivate: [AuthGuard]},
     ])
   ],
   providers: [
     UnaddedshipsService,
     HubconnectionService,
+    AuthGuard,
   ],
   bootstrap: [AppComponent]
 })

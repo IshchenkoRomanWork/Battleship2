@@ -1,3 +1,4 @@
+import { HubconnectionService } from './../../services/hubconnection.service';
 import { UnaddedshipsService } from '../../services/unaddedships.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -11,11 +12,12 @@ export class SetupComponent implements OnInit, OnDestroy {
   unaddedShipList: number[] = []; // 1, 2, 2, 2, 3, 4
   subscription: Subscription;
 
-  constructor(private unaddedshipsService: UnaddedshipsService) {
-    this.subscription = unaddedshipsService.UnaddedShipsSubject.subscribe(unaddedShips => {
-      // console.log("Setup subscription called, unaddedShips is" + unaddedShips);
-      this.unaddedShipList = this.getUnaddedShipList(unaddedShips);
-    });
+  constructor(private unaddedshipsService: UnaddedshipsService,
+    private hubconnectionService: HubconnectionService) {
+      this.subscription = this.unaddedshipsService.UnaddedShipsSubject.subscribe(unaddedShips => {
+        // console.log("Setup subscription called, unaddedShips is" + unaddedShips);
+        this.unaddedShipList = this.getUnaddedShipList(unaddedShips);
+      });
    }
 
    getUnaddedShipList(unaddedShips) {
@@ -29,7 +31,12 @@ export class SetupComponent implements OnInit, OnDestroy {
     return unaddedShipList;
    }
 
+   Ready() {
+     this.hubconnectionService.Ready();
+   }
+
   ngOnInit() {
+    this.unaddedshipsService.UnaddedShipsSubject.next(this.unaddedshipsService.UnaddedShips);
   }
   ngOnDestroy() {
     this.subscription.unsubscribe();

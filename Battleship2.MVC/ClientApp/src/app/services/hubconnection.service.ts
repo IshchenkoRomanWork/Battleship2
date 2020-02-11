@@ -46,10 +46,11 @@ export class HubconnectionService {
 }
   private AddEvents() {
     this.hubConnection.on('GameStart', () => {
+      console.log("game started");
       this.GameStartSubject.next();
     });
     this.hubConnection.on('OpponentConnected', (opponentsName) => { 
-      console.log("opponentn connected" + opponentsName);
+      // console.log("opponentn connected" + opponentsName);
       this.OpponentConnectedSubject.next(opponentsName);
     });
     this.hubConnection.on('SetId', (gameId) => {

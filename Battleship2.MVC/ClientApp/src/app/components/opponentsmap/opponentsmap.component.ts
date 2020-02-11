@@ -22,9 +22,21 @@ export class OpponentsmapComponent implements OnInit, OnDestroy {
   });
     this.yourTurnSubscription = hubConnectionService.YourTurnSubject.subscribe(() => {
     this.youAreActivePlayer = true;
+    alert('You are active player now');
   });
-    this.yourShootResultSubscription = hubConnectionService.YourShootResultSubject.subscribe(() => {
-    this.youAreActivePlayer = true;
+    this.yourShootResultSubscription = hubConnectionService.YourShootResultSubject.subscribe((shootedJsonData) => {
+      console.log("YourShootResult shootedJsonData");
+      console.log(shootedJsonData);
+      const shootedData = JSON.parse(JSON.stringify(eval("(" + shootedJsonData + ")")));
+      const newMap = [...this.map];
+      shootedData.forEach(shootedCoord => {
+          newMap[10 - shootedCoord.Item1.CoordY][shootedCoord.Item1.CoordX - 1].damaged = true;
+          newMap[10 - shootedCoord.Item1.CoordY][shootedCoord.Item1.CoordX - 1].hidden = false;
+          if (shootedCoord.Item2) {
+            newMap[10 - shootedCoord.Item1.CoordY][shootedCoord.Item1.CoordX - 1].ship = true;
+          }
+      });
+      this.map = newMap;
   });
    }
 

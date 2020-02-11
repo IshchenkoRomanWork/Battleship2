@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { HubconnectionService } from 'src/app/services/hubconnection.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -14,7 +14,7 @@ export class GameboardComponent implements OnInit, OnDestroy {
   playerId = '';
   opponentsName = '';
   isGameCreated = false;
-  showSetup = false;
+  showSetup = true;
   gameStartSubscription: Subscription;
   opponentConnectedSubscription: Subscription;
   setIdSubscription: Subscription;
@@ -26,10 +26,14 @@ export class GameboardComponent implements OnInit, OnDestroy {
   constructor(public hubConnectionService: HubconnectionService,
     route: ActivatedRoute,
     public http: HttpClient) {
-    if (route.snapshot.paramMap.get('gameid')) {
-      console.log(route.snapshot.paramMap.get('gameid'));
-      console.log(typeof route.snapshot.paramMap.get('gameid'));
-      this.gameId = route.snapshot.paramMap.get('gameid');
+    // console.log("route object");
+    // console.log(route);
+    // console.log("snapshot object");
+    // console.log(route.snapshot);
+    // console.log("Param Map object");
+    // console.log(route.snapshot.queryParams.gameid);
+    if (route.snapshot.queryParams.gameid) {
+      this.gameId = route.snapshot.queryParams.gameid;
     }
     // console.log('before gameboard subscriptions made');
     this.gameStartSubscription = hubConnectionService.GameStartSubject.subscribe(() => {
@@ -65,6 +69,13 @@ export class GameboardComponent implements OnInit, OnDestroy {
     //   }
       // console.log(playerid);
     // });
+  }
+
+  @HostListener('window:beforeunload', [ '$event' ])
+  beforeUnloadHandler(event) {
+    {
+      this.hubConnectionService.PlayerLeft();
+    }
   }
   ngOnInit() {
     // console.log('before promise from gameapi call made');

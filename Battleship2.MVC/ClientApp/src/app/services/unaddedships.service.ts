@@ -16,6 +16,7 @@ constructor(private hubConnectionService: HubconnectionService) {
     // console.log("after unadded service Subscription event call");
     // console.log(this.UnaddedShips)
  });
+ this.UnaddedShipsSubject.next(this.UnaddedShips);
 }
 ngOnDestroy(): void {
   this.UnaddedShipRemovedSubscription.unsubscribe();

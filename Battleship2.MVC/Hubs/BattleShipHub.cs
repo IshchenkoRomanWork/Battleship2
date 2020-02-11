@@ -86,7 +86,7 @@ namespace Battleship2.MVC.Hubs
             if (addedsuccessfull)
             {
                 var jsonCoordList = JsonConvert.SerializeObject(shipInfo.GetCoordsFromShipInformation());
-                _logger.LogInformation("AddFinished");
+                //_logger.LogInformation("AddFinished");
                 Clients.Client(connectionId).SendAsync("AddShip", jsonCoordList, length);
             }
         }

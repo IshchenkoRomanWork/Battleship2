@@ -28,10 +28,12 @@ export class YourmapComponent implements OnInit, OnDestroy {
       this.map = newMap;
     });
     this.yourFieldShootedSubscription = hubConnectionService.YourFieldShootedSubject.subscribe((shootedJsonData) => {
+      console.log("YourField shootedJsonData");
+      console.log(shootedJsonData);
       const shootedData = JSON.parse(JSON.stringify(eval('(' + shootedJsonData + ')')));
       const newMap = [...this.map];
       shootedData.forEach(shootedCoord => {
-        newMap[shootedCoord.Item1.CoordY - 1][shootedCoord.Item1.CoordX - 1].damaged = true;
+        newMap[10 - shootedCoord.Item1.CoordY][shootedCoord.Item1.CoordX - 1].damaged = true;
       });
       this.map = newMap;
     });
